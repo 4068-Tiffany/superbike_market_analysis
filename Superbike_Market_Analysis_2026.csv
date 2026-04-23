@@ -1,0 +1,34 @@
+Company,Country of Origin,Model,Number of cc,Horsepower,Torque,Transmission Type,Drivetrain,Number of Seating,Price (in INR),Year,Looks,Body Type,Engine Type,Number of Cylinders,HP,CC,Efficiency,Class
+BMW,Germany,G 310 GS,313,34 hp,28 Nm,6-speed Manual,Chain,2,"3,00,000",2023,Adventure,Adventure,Single,1,34.0,313.0,0.10862619808306709,Entry
+BMW,Germany,G 310 R,313,34 hp,28 Nm,6-speed Manual,Chain,2,"2,50,000",2023,Sporty,Roadster,Single,1,34.0,313.0,0.10862619808306709,Entry
+BMW,Germany,F 850 GS,853,95 hp,92 Nm,6-speed Manual,Shaft,2,"6,00,000",2023,Adventure,Adventure,Parallel-twin,2,95.0,853.0,0.11137162954279015,Liter Bike
+BMW,Germany,F 850 GS Adventure,853,95 hp,92 Nm,6-speed Manual,Shaft,2,"8,00,000",2023,Adventure,Adventure,Parallel-twin,2,95.0,853.0,0.11137162954279015,Liter Bike
+BMW,Germany,R 1250 GS,"1,170",136 hp,112 Nm,6-speed Manual,Shaft,2,"12,00,000",2023,Adventure,Adventure,Boxer,2,136.0,1.0,136.0,Entry
+BMW,Germany,R 1250 RT,"1,170",136 hp,112 Nm,6-speed Manual,Shaft,2,"14,00,000",2023,Touring,Cruiser,Boxer,2,136.0,1.0,136.0,Entry
+BMW,Germany,S 1000 RR,999,199 hp,113 Nm,6-speed Manual,Chain,2,"16,00,000",2023,Sporty,Superbike,Liquid-cooled inline-4,4,199.0,999.0,0.1991991991991992,Liter Bike
+BMW,Germany,S 1000 R,999,165 hp,112 Nm,6-speed Manual,Chain,2,"12,00,000",2023,Sporty,Roadster,Liquid-cooled inline-4,4,165.0,999.0,0.16516516516516516,Liter Bike
+Honda,Japan,CBR250R,249.6 cc,"26.5 hp @ 8,500 rpm","19.4 Nm @ 7,000 rpm",Manual,Chain drive,2,"1,45,000",2023,Classy,Sport,Single-cylinder,2,26.5,249.6,0.10616987179487179,Entry
+Honda,Japan,CB350R,348.36 cc,"31 hp @ 8,500 rpm","27.3 Nm @ 6,500 rpm",Manual,Chain drive,2,"1,85,000",2023,Classic,Standard,Single-cylinder,1,31.0,348.36,0.08898840280169938,Entry
+Honda,India,Hness CB350,348.36 cc,"29.6 hp @ 5,500 rpm","30.0 Nm @ 3,000 rpm",Manual,Chain drive,2,"1,65,000",2022,Classic,Standard,Single-cylinder,1,29.6,348.36,0.0849695717074291,Entry
+Honda,India,CB Shine,124.9 cc,"10.5 hp @ 7,500 rpm","10.3 Nm @ 5,500 rpm",Manual,Chain drive,2,"65,000",2023,Modern,Standard,Single-cylinder,1,10.5,124.9,0.08406725380304243,Entry
+Honda,India,Activa 125,124.9 cc,"8.75 hp @ 7,500 rpm","10.3 Nm @ 5,500 rpm",CVT,Automatic,2,"62,000",2023,Modern,Scooter,Single-cylinder,1,8.75,124.9,0.07005604483586869,Entry
+Kawasaki,Japan,Ninja 300,296,39 PS @ 11000 rpm,27 Nm @ 10000 rpm,6-speed manual,Chain,2,3.43 Lakh,2023,Classy,Sports,"Liquid-cooled, parallel-twin",2,39.0,296.0,0.13175675675675674,Entry
+Kawasaki,Japan,Ninja 400,399,"45 PS @ 10,000 rpm",39 Nm @ 8000 rpm,6-speed manual,Chain,2,5.19 Lakh,2023,Classy,Sports,"Liquid-cooled, parallel-twin",2,45.0,399.0,0.11278195488721804,Entry
+Kawasaki,Japan,Ninja 650,649,67 PS @ 8000 rpm,66 Nm @ 6500 rpm,6-speed manual,Chain,2,6.65 Lakh,2023,Classy,Sports,"Liquid-cooled, parallel-twin",2,67.0,649.0,0.10323574730354391,Mid-Weight (Supersport)
+Kawasaki,Japan,Z900,948,125 PS @ 9500 rpm,98.6 Nm @ 7700 rpm,6-speed manual,Chain,2,9.11 Lakh,2023,Aggressive,Naked,"Liquid-cooled, four-cylinder",4,125.0,948.0,0.13185654008438819,Liter Bike
+Kawasaki,Japan,Z H2,998,"197 PS @ 11,000 rpm",140 Nm @ 8500 rpm,6-speed manual,Shaft,2,23.02 Lakh,2023,Aggressive,Naked,"Supercharged, four-cylinder",4,197.0,998.0,0.19739478957915832,Liter Bike
+Kawasaki,Japan,Vulcan S,649,60 PS @ 6500 rpm,62 Nm @ 6500 rpm,6-speed manual,Belt,2,6.95 Lakh,2023,Classic,Cruiser,"Liquid-cooled, parallel-twin",2,60.0,649.0,0.09244992295839753,Mid-Weight (Supersport)
+Suzuki,Japan,Gixxer SF 250,249,26.5 PS @ 9700 rpm,22.6 Nm @ 7500 rpm,6-speed manual,Chain drive,2,₹1.69 lakh - ₹1.89 lakh,2022,Sporty,Naked bike,Single-cylinder,1,26.5,249.0,0.10642570281124498,Entry
+Suzuki,Japan,Gixxer 250,249,26.5 PS @ 9000 rpm,22.6 Nm @ 7500 rpm,6-speed manual,Chain drive,2,₹1.39 lakh - ₹1.59 lakh,2022,Sporty,Street bike,Single-cylinder,1,26.5,249.0,0.10642570281124498,Entry
+Suzuki,Japan,Intruder 150,155,14.8 PS @ 8000 rpm,14 Nm @ 6000 rpm,5-speed manual,Chain drive,2,₹1.15 lakh - ₹1.25 lakh,2022,Classic,Cruiser,Single-cylinder,1,14.8,155.0,0.09548387096774194,Entry
+Suzuki,Japan,Access 125,124,8.7 PS @ 7000 rpm,10.2 Nm @ 5000 rpm,CVT,Automatic,2,"₹67,500",2022,Practical,Scooter,Single-cylinder,1,8.7,124.0,0.07016129032258064,Entry
+Suzuki,Japan,Burgman Street 125,124,8.7 PS @ 7000 rpm,10.2 Nm @ 5000 rpm,CVT,Automatic,2,"₹78,300",2022,Practical,Scooter,Single-cylinder,1,8.7,124.0,0.07016129032258064,Entry
+Yamaha,Japan,R1,998,200 hp,112 lb-ft,6-speed manual,Chain drive,1,"20,00,000",2023,"Sporty, aggressive",Sportbike,4-cylinder,4,200.0,998.0,0.20040080160320642,Liter Bike
+Yamaha,Japan,MT-09,889,117 hp,69 lb-ft,6-speed manual,Chain drive,1,"8,50,000",2022,"Modern, sporty",Naked,3-cylinder,3,117.0,889.0,0.13160854893138357,Liter Bike
+Yamaha,Japan,R3,321,42 hp,29 lb-ft,6-speed manual,Chain drive,1,"5,50,000",2022,"Sporty, beginner-friendly",Sportbike,4-cylinder,4,42.0,321.0,0.1308411214953271,Entry
+Yamaha,Japan,FZ-25,249,26 hp,18.6 lb-ft,5-speed manual,Chain drive,1,"3,50,000",2022,"Modern, stylish",Naked,1-cylinder,1,26.0,249.0,0.10441767068273092,Entry
+Yamaha,Japan,XSR155,155,18 hp,14.7 lb-ft,5-speed manual,Chain drive,1,"2,00,000",2022,"Classic, vintage",Retro,1-cylinder,1,18.0,155.0,0.11612903225806452,Entry
+Honda,Japan,CT125,124.9,10.2 hp,10.4 Nm,CVT,Shaft drive,1,"1,35,000",2022,Adventure,Trail,Single,One,10.2,124.9,0.08166533226581264,Entry
+Honda,Japan,Super Cub,110,8.5 hp,9.5 Nm,CVT,Chain drive,1,"65,000",2023,Classic,Standard,Single,One,8.5,110.0,0.07727272727272727,Entry
+Suzuki,Japan,Hayabusa,1340,190 PS @ 9700 rpm,150 Nm @ 7000 rpm,6-speed manual,Chain,2,16.90 Lakh,2023,Classy,Sport,In-line-four,4,190.0,1340.0,0.1417910447761194,Hyperbike
+Yamaha,Japan,MT-10,998,158 bhp,111 Nm,"Constant Mesh, 6-speed",Chain,1,14 lakhs (expected),2023,"Classy, aggressive",Naked streetfighter,"Liquid-cooled, 4-cylinder, DOHC",4,158.0,998.0,0.15831663326653306,Liter Bike
