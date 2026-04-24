@@ -368,44 +368,59 @@ z-index: 100;
 <div class="wrap">
 
 <style>
-  /* --- MOBILE RESPONSIVENESS --- */
+  <style>
+  /* --- MOBILE FIX --- */
   @media (max-width: 768px) {
     
-    /* Stacks the 3 bars vertically */
+    /* 1. Fix the Navigation (No longer hidden!) */
+    nav {
+      display: flex !important;
+      flex-wrap: wrap;       /* Allows links to wrap to a second line if needed */
+      justify-content: center;
+      gap: 10px;
+      padding: 10px;
+      background: rgba(15, 0, 10, 0.9); /* Dark background to keep it readable */
+      position: sticky;      /* Keeps it at the top while you scroll */
+      top: 0;
+      z-index: 1000;
+    }
+
+    nav a {
+      font-size: 12px !important;
+      padding: 5px 8px;
+    }
+
+    /* 2. Prevent content from cutting off */
+    body, html {
+      overflow-x: hidden;    /* Stops the "sideways" shaking */
+    }
+
+    .main-container {        /* Or whatever your main wrapper is called */
+      padding: 60px 15px 20px 15px !important; 
+      width: 100% !important;
+    }
+
+    /* 3. Scale the huge text */
+    h1, .main-title { 
+      font-size: 24px !important; 
+      line-height: 1.1 !important;
+      margin-top: 20px !important;
+    }
+
+    /* 4. Fix the 3 Summary Bars */
     .about-bar {
       flex-direction: column !important;
-      padding: 15px !important;
-      gap: 15px !important;
-      width: 90% !important;
-      margin: 0 auto 20px auto !important;
-      height: auto !important;
+      width: 100% !important;
+      margin: 20px 0 !important;
+      gap: 12px !important;
     }
 
-    /* Adjusts the main heading size */
-    h1, .main-title { 
-      font-size: 26px !important; 
-      line-height: 1.2 !important;
-      text-align: center !important;
-    }
-
-    /* Shrinks and repositions the bike */
+    /* 5. Move the bike out of the way of the text */
     .bike-float {
-      width: 120px !important;
-      position: fixed !important;
-      bottom: 20px !important;
-      right: 10px !important;
-      z-index: 99;
-    }
-
-    /* Ensures images inside bars stay centered */
-    .about-ava {
-      width: 40px !important;
-      height: 40px !important;
-    }
-
-    /* Hide desktop nav if it gets messy on mobile */
-    nav {
-      display: none;
+      width: 100px !important;
+      position: relative !important; /* Move it back into the flow so it doesn't cover text */
+      margin: 20px auto !important;
+      display: block;
     }
   }
 </style>
