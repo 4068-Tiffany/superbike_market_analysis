@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>MotoStat — Which Superbike Delivers the Most Power per CC?</title>
+<title>MotoStat! Which Superbike Delivers the Most Power per CC?</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Barlow+Condensed:wght@400;600;700;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
@@ -266,18 +266,29 @@ code{background:rgba(255,30,120,.1);color:var(--pink2);padding:1px 6px;border-ra
 }
 .bs:hover .bs-tip{display:block;}
 
-
+/* bike animation */
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.bike-float{animation:float 3.2s ease-in-out infinite;
+position: absolute;
+bottom: 30px;
+right: 50px;
+width: 150px;
+z-index: 100;
+}
+.wr{transform-box:fill-box;transform-origin:center center;animation:spin 2s linear infinite;}
+.wf{transform-box:fill-box;transform-origin:center center;animation:spin 2s linear infinite;}
 
 /* ══ ABOUT ══ */
 .about-bar{
   background:rgba(15,0,10,0.85);
   border:1px solid var(--border2);border-radius:10px;
-  padding:22px 26px;display:flex;gap:24px;align-items:center;margin-bottom:14px;
+  padding:10px 15px;display:flex;gap:24px;align-items:center;margin-bottom:30px;width:fit-content;
   backdrop-filter:blur(12px);
 }
-.about-ava{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--magenta));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:20px;color:#fff;flex-shrink:0;}
-.about-title{font-size:15.5px;font-weight:700;color:var(--text);margin-bottom:4px;}
-.about-p{font-size:13px;color:var(--muted);line-height:1.65;}
+.about-ava{width:35px;height:35px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--magenta));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:20px;color:#fff;flex-shrink:0;}
+.about-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.about-p{font-size:10px;color:var(--muted);line-height:1.65;}
 .about-links{display:flex;gap:8px;margin-top:10px;}
 .alink{display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:500;color:var(--muted);border:1px solid var(--border);padding:5px 12px;border-radius:4px;cursor:pointer;transition:all .2s;background:none;}
 .alink:hover{color:var(--pink2);border-color:var(--border2);}
@@ -361,11 +372,11 @@ code{background:rgba(255,30,120,.1);color:var(--pink2);padding:1px 6px;border-ra
   <div class="hero">
     <div class="h-left">
       <div class="h-eye">Data Analysis · bikes_data.csv · 2022–2026</div>
-      <div class="hook">"Most riders chase raw horsepower. But horsepower alone can be misleading — efficiency tells the real story of engineering excellence."</div>
+      <div class="hook">"Most riders chase raw horsepower. But horsepower alone can be misleading efficiency tells the real story of engineering excellence."</div>
       <div class="h-title">
         WHICH SUPERBIKES<br>DELIVER THE <span class="ca">MOST</span><br>POWER PER CC?
       </div>
-      <p class="h-sub">We analysed 400+ motorcycle models from 5 major brands to find which manufacturer squeezes the most horsepower from every cubic centimetre — the true measure of engineering mastery.</p>
+      <p class="h-sub">We analysed 400+ motorcycle models from 5 major brands to find which manufacturer squeezes the most horsepower from every cubic centimetre  the true measure of engineering mastery.</p>
       <div class="h-stats" id="statsRow">
         <div class="hs"><div class="hs-icon">🏍️</div><div class="hs-v" id="sB">0</div><div class="hs-l">Brands</div></div>
         <div class="hs"><div class="hs-icon">📊</div><div class="hs-v" id="sM">0</div><div class="hs-l">Models</div></div>
@@ -486,7 +497,7 @@ code{background:rgba(255,30,120,.1);color:var(--pink2);padding:1px 6px;border-ra
   <div class="ph">
     <div class="ph-tag">Step 01 · Where the Data Comes From</div>
     <div class="ph-h">THE <span>DATASET</span></div>
-    <p class="ph-p">We used a publicly available motorcycle specifications dataset covering 2022–2026 models. Before any analysis, we needed to understand what the data looked like — and what needed fixing.</p>
+    <p class="ph-p">We used a publicly available motorcycle specifications dataset covering 2022–2026 models. Before any analysis, we needed to understand what the data looked like  and what needed fixing.</p>
   </div>
   <div class="g4 mb">
     <div class="kpi kp"><div class="kpi-l">Source</div><div class="kpi-v">GitHub</div><div class="kpi-s">bikes_data.csv</div><span class="badge bp">Public dataset</span></div>
