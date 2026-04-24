@@ -367,6 +367,51 @@ z-index: 100;
 <!-- ═════ WRAP ═════ -->
 <div class="wrap">
 
+<style>
+  /* --- MOBILE RESPONSIVENESS --- */
+  @media (max-width: 768px) {
+    
+    /* Stacks the 3 bars vertically */
+    .about-bar {
+      flex-direction: column !important;
+      padding: 15px !important;
+      gap: 15px !important;
+      width: 90% !important;
+      margin: 0 auto 20px auto !important;
+      height: auto !important;
+    }
+
+    /* Adjusts the main heading size */
+    h1, .main-title { 
+      font-size: 26px !important; 
+      line-height: 1.2 !important;
+      text-align: center !important;
+    }
+
+    /* Shrinks and repositions the bike */
+    .bike-float {
+      width: 120px !important;
+      position: fixed !important;
+      bottom: 20px !important;
+      right: 10px !important;
+      z-index: 99;
+    }
+
+    /* Ensures images inside bars stay centered */
+    .about-ava {
+      width: 40px !important;
+      height: 40px !important;
+    }
+
+    /* Hide desktop nav if it gets messy on mobile */
+    nav {
+      display: none;
+    }
+  }
+</style>
+<!-- WRAP -->
+<div class="wrap">
+
 <!-- ━━━━ PAGE 1: HERO ━━━━ -->
 <div class="page on" id="p1">
   <div class="hero">
