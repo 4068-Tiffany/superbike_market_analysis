@@ -2,128 +2,164 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>MotoStat! Which Superbike Delivers the Most Power per CC?</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<title>MotoStat — Which Superbike Delivers the Most Power per CC?</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Barlow+Condensed:wght@400;600;700;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
-  --bg:#0A0005;--bg2:#12000A;--bg3:#1A0010;
-  --card:rgba(20,0,12,0.85);--card2:rgba(28,0,18,0.9);
-  --border:rgba(255,30,120,0.12);--border2:rgba(255,30,120,0.25);
+  --bg:#0A0005;--bg2:#12000A;
+  --card:rgba(14,0,9,0.82);--card2:rgba(22,0,14,0.88);
+  --border:rgba(255,30,120,0.13);--border2:rgba(255,30,120,0.26);
   --text:#F5EEF2;--muted:#A08898;--faint:#2A0018;
   --pink:#FF1E78;--pink2:#FF5CA8;
-  --rose:#FF6B9D;--magenta:#CC00AA;
+  --magenta:#CC00AA;
   --gold:#FFD200;--green:#00E87A;--cyan:#00D4FF;
   --kaw:#39D448;--bmw:#1A6FD4;--honda:#E8001D;--suz:#FF6B00;--yam:#4455CC;
+  --nav-h:52px;
 }
-html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+html,body{
+  height:100%;width:100%;overflow:hidden;
+  background:var(--bg);color:var(--text);
+  font-family:'Plus Jakarta Sans',sans-serif;
+}
 
-/* ══ HERO BIKE BACKGROUND ══ */
+/* ══ BIKE BACKGROUND ══ */
 .bike-bg{
   position:fixed;inset:0;z-index:0;
-  background:
-    url('https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=1600&q=80') center/cover no-repeat;
+  background:url('https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=1600&q=80') center/cover no-repeat;
 }
-/* heavy dark overlay so text is readable */
 .bike-bg::after{
   content:'';position:absolute;inset:0;
-  background:
-    linear-gradient(135deg, rgba(10,0,5,0.92) 0%, rgba(10,0,5,0.75) 50%, rgba(10,0,5,0.88) 100%);
+  background:linear-gradient(
+    105deg,
+    rgba(10,0,5,0.91) 0%,
+    rgba(10,0,5,0.72) 45%,
+    rgba(10,0,5,0.55) 100%
+  );
 }
-/* pink/magenta color tint layer */
 .bike-bg::before{
   content:'';position:absolute;inset:0;z-index:1;
   background:
-    radial-gradient(ellipse 60% 70% at 15% 50%, rgba(204,0,170,0.18) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 60% at 85% 30%, rgba(255,30,120,0.12) 0%, transparent 55%);
+    radial-gradient(ellipse 55% 70% at 8% 55%, rgba(204,0,170,0.16) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 50% at 92% 20%, rgba(255,30,120,0.10) 0%, transparent 55%);
 }
-.bg-grain{
-  position:fixed;inset:0;z-index:1;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-  opacity:.4;pointer-events:none;
-}
-/* top & bottom accent lines */
-.accent-top{position:fixed;top:58px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--pink),var(--magenta),transparent);opacity:.5;z-index:50;}
-.accent-bot{position:fixed;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--magenta),var(--pink),transparent);opacity:.4;z-index:50;}
+.accent-bot{position:fixed;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--magenta),var(--pink),transparent);opacity:.4;z-index:60;}
 
 /* ══ NAV ══ */
 nav{
-  position:fixed;top:0;left:0;right:0;z-index:200;height:58px;
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  height:var(--nav-h);
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 32px;
-  background:rgba(8,0,5,0.94);
+  padding:0 20px;
+  background:rgba(8,0,5,0.95);
   border-bottom:1px solid var(--border);
   backdrop-filter:blur(20px);
 }
-.logo{display:flex;align-items:center;gap:10px;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--text);}
+.logo{
+  display:flex;align-items:center;gap:8px;
+  font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:var(--text);
+  flex-shrink:0;
+}
 .logo em{color:var(--pink);font-style:normal;}
 .logo-flag{display:grid;grid-template-columns:1fr 1fr;gap:1.5px;}
-.logo-flag span{width:7px;height:7px;}
+.logo-flag span{width:6px;height:6px;}
 .logo-flag span:nth-child(1),.logo-flag span:nth-child(4){background:var(--text);}
 .logo-flag span:nth-child(2),.logo-flag span:nth-child(3){background:var(--bg);}
-.nav-tabs{display:flex;gap:2px;}
-.nt{background:none;border:none;cursor:pointer;
-  font-family:'Plus Jakarta Sans',sans-serif;font-size:11.5px;font-weight:500;
-  color:var(--muted);padding:6px 12px;border-radius:4px;
-  transition:all .2s;position:relative;}
+
+/* Desktop nav tabs */
+.nav-tabs{display:flex;gap:1px;overflow:hidden;}
+.nt{
+  background:none;border:none;cursor:pointer;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:500;
+  color:var(--muted);padding:5px 9px;border-radius:3px;
+  transition:all .2s;position:relative;white-space:nowrap;
+}
 .nt:hover{color:var(--text);background:rgba(255,30,120,0.07);}
 .nt.on{color:var(--pink2);}
-.nt.on::after{content:'';position:absolute;bottom:-1px;left:8px;right:8px;height:2px;background:var(--pink);border-radius:1px;}
-.nav-right{display:flex;align-items:center;gap:10px;}
-.nav-pill{font-size:10.5px;font-weight:600;letter-spacing:.5px;color:var(--muted);}
-.ndots{display:flex;gap:5px;}
+.nt.on::after{content:'';position:absolute;bottom:-1px;left:5px;right:5px;height:2px;background:var(--pink);border-radius:1px;}
+
+.nav-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.nctr{font-size:10px;font-weight:600;letter-spacing:.5px;color:var(--muted);}
+.ndots{display:flex;gap:4px;}
 .ndot{width:5px;height:5px;border-radius:50%;background:var(--faint);transition:all .3s;}
 .ndot.on{background:var(--pink);transform:scale(1.3);}
 
+/* Mobile hamburger */
+.mob-menu-btn{display:none;background:none;border:none;cursor:pointer;color:var(--text);font-size:20px;padding:4px;}
+.mob-drawer{
+  display:none;position:fixed;top:var(--nav-h);left:0;right:0;z-index:190;
+  background:rgba(8,0,5,0.98);border-bottom:1px solid var(--border);
+  backdrop-filter:blur(20px);padding:8px 0;
+}
+.mob-drawer.open{display:block;}
+.mob-nt{display:block;width:100%;background:none;border:none;cursor:pointer;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:500;
+  color:var(--muted);padding:11px 20px;text-align:left;transition:all .2s;
+}
+.mob-nt.on{color:var(--pink2);background:rgba(255,30,120,0.07);}
+.mob-nt:hover{color:var(--text);}
+
 /* ══ PAGE SYSTEM ══ */
-.wrap{position:fixed;inset:0;top:58px;z-index:10;}
+.wrap{
+  position:fixed;
+  top:var(--nav-h);left:0;right:0;bottom:0;
+  z-index:10;
+  overflow:hidden;
+}
 .page{
-  position:absolute;inset:0;overflow-y:auto;padding:32px 40px;
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
   opacity:0;pointer-events:none;
-  transition:opacity .38s ease,transform .38s ease;
-  transform:translateX(28px);
+  transition:opacity .35s ease,transform .35s ease;
+  transform:translateX(24px);
+  overflow:hidden;
 }
 .page.on{opacity:1;pointer-events:all;transform:translateX(0);}
-.page.bye{opacity:0;transform:translateX(-28px);}
-.page::-webkit-scrollbar{width:3px;}
-.page::-webkit-scrollbar-thumb{background:rgba(255,30,120,0.3);border-radius:2px;}
+.page.bye{opacity:0;transform:translateX(-24px);}
+
+/* inner scroll for content pages only */
+.page-inner{
+  flex:1;overflow-y:auto;overflow-x:hidden;
+  padding:24px 28px;
+}
+.page-inner::-webkit-scrollbar{width:3px;}
+.page-inner::-webkit-scrollbar-thumb{background:rgba(255,30,120,0.3);border-radius:2px;}
 
 /* ══ LAYOUT ══ */
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
-.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
-.ga{grid-column:1/-1;}
-.mb{margin-bottom:14px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.mb{margin-bottom:12px;}
 
 /* ══ CARDS ══ */
 .card{
-  background:rgba(15,0,10,0.82);
-  border:1px solid var(--border);border-radius:10px;padding:22px;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:10px;padding:18px;
   backdrop-filter:blur(12px);
 }
 .ct{
-  font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;
+  font-family:'Barlow Condensed',sans-serif;font-size:10.5px;font-weight:700;
   letter-spacing:2px;text-transform:uppercase;color:var(--muted);
-  margin-bottom:14px;display:flex;align-items:center;gap:7px;
+  margin-bottom:12px;display:flex;align-items:center;gap:6px;
 }
-.ct::before{content:'';display:block;width:3px;height:12px;background:var(--pink);border-radius:1px;flex-shrink:0;}
+.ct::before{content:'';display:block;width:3px;height:11px;background:var(--pink);border-radius:1px;flex-shrink:0;}
 
 /* ══ KPI ══ */
 .kpi{
-  background:rgba(15,0,10,0.82);border:1px solid var(--border);border-radius:10px;
-  padding:18px 20px;position:relative;overflow:hidden;backdrop-filter:blur(12px);
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:14px 16px;position:relative;overflow:hidden;backdrop-filter:blur(12px);
 }
 .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
 .kpi.kp::before{background:var(--pink);}
 .kpi.kg::before{background:var(--green);}
 .kpi.kc::before{background:var(--cyan);}
 .kpi.km::before{background:var(--magenta);}
-.kpi-l{font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted);margin-bottom:7px;}
-.kpi-v{font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:1px;line-height:1;color:var(--text);margin-bottom:3px;}
-.kpi-s{font-size:12px;color:var(--muted);}
-.badge{display:inline-block;font-size:10px;font-weight:600;padding:3px 8px;border-radius:2px;margin-top:6px;}
+.kpi-l{font-size:9.5px;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+.kpi-v{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;line-height:1;color:var(--text);margin-bottom:2px;}
+.kpi-s{font-size:11px;color:var(--muted);}
+.badge{display:inline-block;font-size:9.5px;font-weight:600;padding:2px 7px;border-radius:2px;margin-top:5px;}
 .bp{background:rgba(255,30,120,.15);color:var(--pink2);}
 .bg-b{background:rgba(0,232,122,.12);color:var(--green);}
 .bc{background:rgba(0,212,255,.12);color:var(--cyan);}
@@ -131,216 +167,301 @@ nav{
 .by{background:rgba(255,210,0,.12);color:var(--gold);}
 
 /* ══ TABLE ══ */
-table.dt{width:100%;border-collapse:collapse;font-size:13px;}
-table.dt th{text-align:left;padding:8px 12px;font-size:10px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);}
-table.dt td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.03);color:var(--text);}
+table.dt{width:100%;border-collapse:collapse;font-size:12px;}
+table.dt th{text-align:left;padding:7px 10px;font-size:9.5px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);}
+table.dt td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.03);color:var(--text);}
 table.dt tr:last-child td{border:none;}
 table.dt tr:hover td{background:rgba(255,30,120,.04);}
-code{background:rgba(255,30,120,.1);color:var(--pink2);padding:1px 6px;border-radius:3px;font-size:11.5px;font-family:'Courier New',monospace;}
+code{background:rgba(255,30,120,.1);color:var(--pink2);padding:1px 5px;border-radius:3px;font-size:11px;font-family:'Courier New',monospace;}
 
 /* ══ ALERT ══ */
-.alert{background:rgba(232,0,29,.08);border:1px solid rgba(232,0,29,.22);border-radius:8px;padding:14px 18px;display:flex;gap:12px;}
-.alert-t{font-size:13.5px;font-weight:600;color:#FF6680;margin-bottom:3px;}
-.alert-d{font-size:12.5px;color:var(--muted);line-height:1.55;}
+.alert{background:rgba(232,0,29,.07);border:1px solid rgba(232,0,29,.2);border-radius:8px;padding:12px 16px;display:flex;gap:10px;}
+.alert-t{font-size:12.5px;font-weight:600;color:#FF6680;margin-bottom:3px;}
+.alert-d{font-size:12px;color:var(--muted);line-height:1.5;}
 
 /* ══ STEP ══ */
-.step{display:flex;gap:14px;margin-bottom:16px;}
-.step-n{flex-shrink:0;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--magenta));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:14px;color:#fff;}
-.step-t{font-size:14.5px;font-weight:600;color:var(--text);margin-bottom:3px;}
-.step-d{font-size:13px;color:var(--muted);line-height:1.6;}
+.step{display:flex;gap:12px;margin-bottom:14px;}
+.step-n{flex-shrink:0;width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--magenta));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:13px;color:#fff;}
+.step-t{font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.step-d{font-size:12px;color:var(--muted);line-height:1.55;}
 
 /* ══ VERDICT ══ */
-.verd{background:rgba(15,0,10,0.82);border:1px solid var(--border);border-left:3px solid;border-radius:0 10px 10px 0;padding:18px 20px;backdrop-filter:blur(12px);}
+.verd{background:var(--card);border:1px solid var(--border);border-left:3px solid;border-radius:0 10px 10px 0;padding:16px 18px;backdrop-filter:blur(12px);}
 .verd.vg{border-left-color:var(--green);}
 .verd.vp{border-left-color:var(--pink);}
 .verd.vc{border-left-color:var(--cyan);}
-.v-rq{font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
-.v-a{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;color:var(--text);margin-bottom:6px;}
-.v-d{font-size:13px;color:var(--muted);line-height:1.6;}
-.vtag{display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:3px 9px;border-radius:2px;margin-top:8px;}
+.v-rq{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.v-a{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:5px;}
+.v-d{font-size:12px;color:var(--muted);line-height:1.55;}
+.vtag{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:3px 8px;border-radius:2px;margin-top:7px;}
 
 /* ══ PAGE NAV ══ */
-.pnav{display:flex;justify-content:space-between;align-items:center;margin-top:28px;padding-top:18px;border-top:1px solid var(--border);}
-.pn{display:flex;align-items:center;gap:8px;background:none;border:1px solid var(--border);border-radius:4px;padding:8px 18px;cursor:pointer;font-size:12px;font-weight:600;color:var(--muted);transition:all .2s;}
+.pnav{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 28px;border-top:1px solid var(--border);
+  background:rgba(8,0,5,0.6);backdrop-filter:blur(12px);flex-shrink:0;
+}
+.pn{display:flex;align-items:center;gap:7px;background:none;border:1px solid var(--border);border-radius:4px;padding:7px 16px;cursor:pointer;font-size:11.5px;font-weight:600;color:var(--muted);transition:all .2s;}
 .pn:hover{border-color:var(--pink);color:var(--pink);}
-.pn.pr{background:linear-gradient(135deg,var(--pink),var(--magenta));border:none;color:#fff;box-shadow:0 4px 20px rgba(255,30,120,0.35);}
-.pn.pr:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(255,30,120,0.5);}
+.pn.pr{background:linear-gradient(135deg,var(--pink),var(--magenta));border:none;color:#fff;box-shadow:0 4px 18px rgba(255,30,120,0.35);}
+.pn.pr:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(255,30,120,0.5);}
 
 /* ══ CHART ══ */
 .cw{position:relative;width:100%;}
 
 /* ══ INSIGHT ══ */
-.insight{background:rgba(255,30,120,.06);border:1px solid rgba(255,30,120,.15);border-radius:8px;padding:12px 16px;margin-top:10px;display:flex;gap:9px;align-items:flex-start;}
-.insight-d{font-size:12.5px;color:var(--muted);line-height:1.55;}
+.insight{background:rgba(255,30,120,.06);border:1px solid rgba(255,30,120,.14);border-radius:7px;padding:10px 14px;margin-top:10px;font-size:12px;color:var(--muted);line-height:1.55;}
 
-/* ══ HERO PAGE ══ */
-#p1{padding:0;display:flex;flex-direction:column;overflow:hidden;}
-.hero{display:flex;align-items:center;padding:44px 52px 24px;flex:1;gap:52px;}
-.h-left{flex:1;max-width:560px;z-index:2;}
-.hook{
-  font-size:14.5px;font-weight:400;font-style:italic;color:#C09AAE;
-  border-left:2px solid var(--pink);padding-left:14px;
-  margin-bottom:22px;line-height:1.65;
+/* ══ PAGE HEADER ══ */
+.ph{margin-bottom:20px;}
+.ph-tag{display:inline-flex;align-items:center;gap:7px;font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--pink);border:1px solid rgba(255,30,120,.28);padding:3px 10px;border-radius:2px;margin-bottom:10px;}
+.ph-tag::before{content:'';width:14px;height:1px;background:var(--pink);}
+.ph-h{font-family:'Bebas Neue',sans-serif;font-size:38px;letter-spacing:2px;line-height:.95;color:var(--text);margin-bottom:8px;text-shadow:0 0 40px rgba(255,30,120,0.2);}
+.ph-h span{color:var(--pink);}
+.ph-p{font-size:13.5px;color:#B09AAC;line-height:1.65;max-width:600px;}
+
+/* ══ HEATMAP ══ */
+#hmDiv table{width:100%;border-collapse:separate;border-spacing:3px;}
+#hmDiv th{padding:5px 6px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;text-align:center;}
+#hmDiv th:first-child{text-align:left;}
+#hmDiv td{padding:8px 8px;border-radius:4px;text-align:center;font-size:11px;}
+
+/* ══ CORR ══ */
+#corrDiv table{width:100%;border-collapse:separate;border-spacing:3px;}
+#corrDiv th,#corrDiv td{padding:6px 8px;text-align:center;border-radius:4px;font-size:11px;}
+#corrDiv th{color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.5px;background:transparent;}
+
+/* ══ TROPHY ══ */
+.trophy{background:linear-gradient(135deg,rgba(255,210,0,.07),rgba(255,30,120,.06),rgba(204,0,170,.05));border:1px solid rgba(255,210,0,.2);border-radius:12px;padding:20px 24px;text-align:center;margin-bottom:12px;backdrop-filter:blur(12px);}
+.t-icon{font-size:36px;margin-bottom:8px;}
+.t-title{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:2px;color:var(--gold);margin-bottom:4px;}
+.t-sub{font-size:12.5px;color:var(--muted);line-height:1.6;}
+
+/* ══ ABOUT ══ */
+.about-bar{background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:18px 22px;display:flex;gap:20px;align-items:center;margin-bottom:12px;backdrop-filter:blur(12px);}
+.about-ava{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--magenta));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:18px;color:#fff;flex-shrink:0;}
+.about-title{font-size:14.5px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.about-p{font-size:12px;color:var(--muted);line-height:1.6;}
+.about-links{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
+.alink{font-size:11px;font-weight:500;color:var(--muted);border:1px solid var(--border);padding:4px 10px;border-radius:4px;cursor:pointer;transition:all .2s;background:none;}
+.alink:hover{color:var(--pink2);border-color:var(--border2);}
+
+/* ══ BRAND CARDS ══ */
+.brand-grid-int{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px;}
+.brand-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px;cursor:pointer;transition:all .25s;text-align:center;backdrop-filter:blur(10px);}
+.brand-card:hover,.brand-card.sel{border-color:var(--border2);transform:translateY(-3px);box-shadow:0 8px 22px rgba(255,30,120,0.14);}
+.bc-dot{width:10px;height:10px;border-radius:50%;margin:0 auto 7px;}
+.bc-name{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;color:var(--text);margin-bottom:3px;}
+.bc-stat{font-family:'Bebas Neue',sans-serif;font-size:19px;color:var(--pink);line-height:1;}
+.bc-label{font-size:9.5px;color:var(--muted);margin-top:2px;}
+
+/* ════════════════════════════
+   PAGE 1: HERO — no sidebar,
+   background photo visible
+════════════════════════════ */
+#p1{overflow:hidden;}
+.hero{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:32px 48px;
+  /* left-heavy layout: content max 52% so bike shows right */
+  position:relative;
 }
-.h-eye{font-size:10.5px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--pink2);display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.hero-content{
+  max-width:520px;
+  position:relative;z-index:2;
+}
+.h-eye{
+  font-size:10px;font-weight:600;letter-spacing:3px;text-transform:uppercase;
+  color:var(--pink2);display:flex;align-items:center;gap:10px;margin-bottom:14px;
+}
 .h-eye::before{content:'';width:20px;height:1px;background:var(--pink);}
+.hook{
+  font-size:13.5px;font-style:italic;color:#C09AAE;
+  border-left:2px solid var(--pink);padding-left:14px;
+  margin-bottom:18px;line-height:1.65;max-width:440px;
+}
 .h-title{
   font-family:'Bebas Neue',sans-serif;
-  font-size:70px;letter-spacing:2px;line-height:.92;
-  color:var(--text);margin-bottom:6px;
-  text-shadow:0 0 80px rgba(255,30,120,0.25),0 2px 4px rgba(0,0,0,0.5);
+  font-size:clamp(42px,5vw,68px);
+  letter-spacing:2px;line-height:.92;
+  color:var(--text);margin-bottom:12px;
+  text-shadow:0 0 80px rgba(255,30,120,0.22),0 2px 8px rgba(0,0,0,0.6);
 }
 .h-title .ca{color:var(--pink);}
 .h-sub{
-  font-size:15.5px;font-weight:400;color:#C5AABB;
-  line-height:1.72;margin-bottom:28px;max-width:440px;
+  font-size:clamp(12.5px,1.4vw,15px);
+  color:#C5AABB;line-height:1.7;margin-bottom:22px;max-width:420px;
 }
 /* stats row */
 .h-stats{
-  display:flex;gap:0;margin-bottom:28px;
-  border:1px solid var(--border);border-radius:10px;overflow:hidden;
-  background:rgba(10,0,6,0.6);backdrop-filter:blur(12px);
+  display:flex;gap:0;margin-bottom:22px;
+  border:1px solid var(--border);border-radius:8px;overflow:hidden;
+  background:rgba(10,0,6,0.65);backdrop-filter:blur(14px);
+  max-width:420px;
 }
-.hs{flex:1;padding:14px 10px;text-align:center;border-right:1px solid var(--border);}
+.hs{flex:1;padding:11px 8px;text-align:center;border-right:1px solid var(--border);}
 .hs:last-child{border-right:none;}
-.hs-icon{font-size:20px;margin-bottom:6px;}
-.hs-v{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--pink);line-height:1;}
-.hs-l{font-size:9.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-top:4px;}
-/* CTA */
-.cta-row{display:flex;align-items:center;gap:12px;}
+.hs-icon{font-size:16px;margin-bottom:4px;}
+.hs-v{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--pink);line-height:1;}
+.hs-l{font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-top:3px;}
+/* CTAs */
+.cta-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
 .cta{
-  display:inline-flex;align-items:center;gap:10px;
+  display:inline-flex;align-items:center;gap:8px;
   background:linear-gradient(135deg,var(--pink),var(--magenta));
   color:#fff;border:none;cursor:pointer;
-  font-size:13.5px;font-weight:700;letter-spacing:.5px;
-  padding:14px 30px;border-radius:7px;
+  font-size:13px;font-weight:700;letter-spacing:.3px;
+  padding:12px 24px;border-radius:7px;
   transition:all .3s;
-  box-shadow:0 4px 28px rgba(255,30,120,0.4);
+  box-shadow:0 4px 24px rgba(255,30,120,0.38);
 }
-.cta:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 10px 40px rgba(255,30,120,0.55);}
+.cta:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 10px 36px rgba(255,30,120,0.52);}
 .cta-ghost{
-  display:inline-flex;align-items:center;gap:8px;
-  background:rgba(10,0,6,0.6);border:1px solid var(--border);
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(10,0,6,0.65);border:1px solid var(--border);
   color:var(--muted);cursor:pointer;
   font-size:12px;font-weight:500;
-  padding:13px 20px;border-radius:7px;transition:all .25s;
+  padding:11px 18px;border-radius:7px;transition:all .25s;
   backdrop-filter:blur(12px);
 }
 .cta-ghost:hover{border-color:var(--pink2);color:var(--pink2);}
 
-/* right mini stats */
-.h-right{flex-shrink:0;display:flex;flex-direction:column;gap:10px;z-index:2;}
-.mini-kpi{
-  background:rgba(12,0,8,0.88);border:1px solid var(--border);
-  border-radius:8px;padding:12px 16px;width:210px;
-  transition:all .3s;cursor:default;backdrop-filter:blur(16px);
-}
-.mini-kpi:hover{border-color:var(--border2);transform:translateX(-4px);box-shadow:-4px 0 20px rgba(255,30,120,0.1);}
-.mk-l{font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
-.mk-v{font-family:'Bebas Neue',sans-serif;font-size:21px;letter-spacing:1px;line-height:1;}
-.mk-d{font-size:10.5px;color:var(--muted);margin-top:3px;}
-
-/* brand strip */
+/* brand strip at bottom of hero */
 .b-strip{
   display:grid;grid-template-columns:repeat(5,1fr);
   border-top:1px solid var(--border);
-  background:rgba(6,0,4,0.75);backdrop-filter:blur(20px);
+  background:rgba(6,0,4,0.78);backdrop-filter:blur(22px);
+  flex-shrink:0;
 }
 .bs{
-  padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:5px;
+  padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;
   cursor:pointer;transition:background .2s;position:relative;
 }
 .bs:hover{background:rgba(255,30,120,.08);}
 .bs:not(:last-child){border-right:1px solid var(--border);}
-.bs-color-bar{height:3px;width:80%;border-radius:2px;transition:width .3s;}
-.bs:hover .bs-color-bar{width:95%;}
-.bs-name{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1.5px;color:var(--muted);transition:color .2s;}
+.bs-bar{height:2px;width:80%;border-radius:2px;transition:width .3s;}
+.bs:hover .bs-bar{width:95%;}
+.bs-name{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.2px;color:var(--muted);transition:color .2s;}
 .bs:hover .bs-name{color:var(--text);}
-.bs-eff{font-size:10px;color:var(--faint);transition:color .2s;}
+.bs-eff{font-size:9.5px;color:var(--faint);transition:color .2s;}
 .bs:hover .bs-eff{color:var(--muted);}
 .bs-tip{
-  display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);
-  background:rgba(15,0,10,0.97);border:1px solid var(--border2);border-radius:6px;
-  padding:8px 14px;white-space:nowrap;font-size:11.5px;color:var(--text);
+  display:none;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);
+  background:rgba(14,0,9,0.97);border:1px solid var(--border2);border-radius:6px;
+  padding:7px 12px;white-space:nowrap;font-size:11px;color:var(--text);
   pointer-events:none;z-index:100;backdrop-filter:blur(12px);
 }
 .bs:hover .bs-tip{display:block;}
 
-/* bike animation */
-@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-.bike-float{animation:float 3.2s ease-in-out infinite;
-position: absolute;
-bottom: 30px;
-right: 50px;
-width: 150px;
-z-index: 100;
-}
-.wr{transform-box:fill-box;transform-origin:center center;animation:spin 2s linear infinite;}
-.wf{transform-box:fill-box;transform-origin:center center;animation:spin 2s linear infinite;}
-
-/* ══ ABOUT ══ */
-.about-bar{
-  background:rgba(15,0,10,0.85);
-  border:1px solid var(--border2);border-radius:10px;
-  padding:10px 15px;display:flex;gap:24px;align-items:center;margin-bottom:30px;width:fit-content;
+/* ══ RQ cards ══ */
+.rq-card{
+  background:var(--card);border:1px solid var(--border);
+  border-left:3px solid;border-radius:0 10px 10px 0;
+  padding:16px 18px;margin-bottom:12px;
   backdrop-filter:blur(12px);
 }
-.about-ava{width:35px;height:35px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--magenta));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:20px;color:#fff;flex-shrink:0;}
-.about-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;}
-.about-p{font-size:10px;color:var(--muted);line-height:1.65;}
-.about-links{display:flex;gap:8px;margin-top:10px;}
-.alink{display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:500;color:var(--muted);border:1px solid var(--border);padding:5px 12px;border-radius:4px;cursor:pointer;transition:all .2s;background:none;}
-.alink:hover{color:var(--pink2);border-color:var(--border2);}
+.rq-card.rg{border-left-color:var(--green);}
+.rq-card.ry{border-left-color:var(--gold);}
+.rq-card.rp{border-left-color:var(--pink);}
+.rq-inner{display:flex;gap:20px;align-items:flex-start;}
+.rq-text{flex:1;}
+.rq-num{font-size:9.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.rq-q{font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:700;color:var(--text);margin-bottom:8px;line-height:1.25;}
+.rq-a{font-size:13px;color:#B09AAC;line-height:1.65;}
+.rq-chart{flex-shrink:0;}
 
-/* ══ BRAND CARDS ══ */
-.brand-grid-int{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px;}
-.brand-card{
-  background:rgba(15,0,10,0.82);border:1px solid var(--border);border-radius:8px;
-  padding:14px;cursor:pointer;transition:all .25s;text-align:center;backdrop-filter:blur(10px);
+/* ════════════════════════════
+   RESPONSIVE — MOBILE
+════════════════════════════ */
+@media(max-width:768px){
+  :root{--nav-h:50px;}
+
+  /* nav: hide tab labels, show hamburger */
+  .nav-tabs{display:none;}
+  .mob-menu-btn{display:flex;}
+  .nctr{display:none;}
+
+  /* hero: full width, smaller text, compressed */
+  .hero{padding:20px 20px 14px;}
+  .hero-content{max-width:100%;}
+  .h-title{font-size:clamp(36px,9vw,52px);}
+  .hook{font-size:12.5px;margin-bottom:14px;}
+  .h-sub{font-size:12.5px;margin-bottom:16px;max-width:100%;}
+  .h-stats{max-width:100%;}
+  .hs{padding:9px 5px;}
+  .hs-icon{font-size:14px;}
+  .hs-v{font-size:20px;}
+  .hs-l{font-size:8px;}
+  .cta{font-size:12px;padding:10px 18px;}
+  .cta-ghost{font-size:11px;padding:9px 14px;}
+  .h-eye{font-size:9px;margin-bottom:10px;}
+
+  /* brand strip on mobile */
+  .b-strip{display:grid;grid-template-columns:repeat(5,1fr);}
+  .bs{padding:8px 2px;}
+  .bs-name{font-size:9px;letter-spacing:.8px;}
+  .bs-eff{display:none;}
+  .bs-tip{display:none !important;}
+
+  /* inner pages */
+  .page-inner{padding:16px 16px;}
+  .ph-h{font-size:28px;}
+  .ph-p{font-size:12.5px;}
+
+  /* grids collapse to single column */
+  .g2,.g3,.g4{grid-template-columns:1fr;}
+  .brand-grid-int{grid-template-columns:repeat(5,1fr);gap:5px;}
+  .bc-name{font-size:9.5px;}
+  .bc-stat{font-size:16px;}
+  .bc-label{font-size:8.5px;}
+
+  /* rq cards stack */
+  .rq-inner{flex-direction:column;gap:12px;}
+  .rq-chart{width:100%;}
+  .rq-q{font-size:16px;}
+  .rq-a{font-size:12px;}
+
+  /* tables scroll horizontally if needed */
+  .tbl-wrap{overflow-x:auto;}
+  table.dt{font-size:11px;}
+  table.dt th{font-size:8.5px;padding:6px 8px;}
+  table.dt td{padding:7px 8px;}
+
+  /* heatmap smaller */
+  #hmDiv th{font-size:8.5px;padding:4px 4px;}
+  #hmDiv td{padding:6px 5px;font-size:10px;}
+
+  /* pnav */
+  .pnav{padding:10px 16px;}
+  .pn{font-size:11px;padding:6px 12px;}
+
+  /* cards */
+  .card{padding:14px;}
+  .kpi{padding:12px 14px;}
+  .kpi-v{font-size:24px;}
+
+  /* trophy */
+  .t-title{font-size:28px;}
+  .t-icon{font-size:30px;}
+
+  /* about */
+  .about-bar{flex-direction:column;gap:12px;padding:14px 16px;}
 }
-.brand-card:hover,.brand-card.sel{border-color:var(--border2);transform:translateY(-3px);box-shadow:0 8px 24px rgba(255,30,120,0.15);}
-.bc-dot{width:12px;height:12px;border-radius:50%;margin:0 auto 8px;}
-.bc-name{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;color:var(--text);margin-bottom:4px;}
-.bc-stat{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--pink);line-height:1;}
-.bc-label{font-size:10px;color:var(--muted);margin-top:2px;}
 
-/* ══ HEATMAP ══ */
-#hmDiv table{width:100%;border-collapse:separate;border-spacing:3px;}
-#hmDiv th{padding:6px 8px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;text-align:center;}
-#hmDiv th:first-child{text-align:left;}
-#hmDiv td{padding:9px 10px;border-radius:5px;text-align:center;font-size:11.5px;}
-
-/* ══ CORR ══ */
-#corrDiv table{width:100%;border-collapse:separate;border-spacing:3px;}
-#corrDiv th,#corrDiv td{padding:7px 9px;text-align:center;border-radius:4px;font-size:11.5px;}
-#corrDiv th{color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:1.5px;background:transparent;}
-
-/* ══ TROPHY ══ */
-.trophy{
-  background:linear-gradient(135deg,rgba(255,210,0,.07),rgba(255,30,120,.06),rgba(204,0,170,.05));
-  border:1px solid rgba(255,210,0,.2);border-radius:12px;
-  padding:26px 28px;text-align:center;margin-bottom:14px;backdrop-filter:blur(12px);
+@media(max-width:400px){
+  .h-title{font-size:34px;}
+  .brand-grid-int{grid-template-columns:repeat(5,1fr);gap:3px;}
+  .bc-name{font-size:8px;}
 }
-.t-icon{font-size:44px;margin-bottom:10px;}
-.t-title{font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:2px;color:var(--gold);margin-bottom:6px;}
-.t-sub{font-size:13.5px;color:var(--muted);line-height:1.65;}
-
-/* ══ PAGE HEADER ══ */
-.ph{margin-bottom:26px;}
-.ph-tag{display:inline-flex;align-items:center;gap:8px;font-size:10.5px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--pink);border:1px solid rgba(255,30,120,.28);padding:3px 11px;border-radius:2px;margin-bottom:12px;}
-.ph-tag::before{content:'';width:16px;height:1px;background:var(--pink);}
-.ph-h{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:2px;line-height:.95;color:var(--text);margin-bottom:10px;text-shadow:0 0 40px rgba(255,30,120,0.2);}
-.ph-h span{color:var(--pink);}
-.ph-p{font-size:14.5px;color:#B09BAC;line-height:1.7;max-width:620px;font-weight:400;}
 </style>
 </head>
 <body>
 
 <!-- BACKGROUNDS -->
 <div class="bike-bg"></div>
-<div class="bg-grain"></div>
-<div class="accent-top"></div>
 <div class="accent-bot"></div>
 
 <!-- NAV -->
@@ -359,171 +480,128 @@ z-index: 100;
     <button class="nt" data-p="6">Conclusions</button>
   </div>
   <div class="nav-right">
-    <span class="nav-pill" id="pgCtr">01/07</span>
+    <span class="nctr" id="pgCtr">01/07</span>
     <div class="ndots" id="ndots"></div>
+    <button class="mob-menu-btn" id="mobBtn">☰</button>
   </div>
 </nav>
 
-<!-- ═════ WRAP ═════ -->
-<div class="wrap">
-
-<style>
-  <style>
- /* ============================================================
-   FINAL MOBILE OVERRIDE - MotoStat
-   ============================================================ */
-@media (max-width: 768px) {
-    /* 1. FORCE SCROLLING: Unlocks the 'stuck' screen */
-    html, body {
-        overflow-y: auto !important;
-        overflow-x: hidden !important;
-        height: auto !important;
-        background-attachment: scroll !important;
-    }
-
-    /* 2. NAVIGATION: Makes links clickable and centered */
-    nav {
-        display: flex !important;
-        flex-wrap: wrap !important;
-        justify-content: center !important;
-        position: sticky !important;
-        top: 0;
-        background: rgba(15, 0, 10, 0.95) !important;
-        padding: 10px 5px !important;
-        z-index: 9999 !important;
-        border-bottom: 1px solid var(--pink);
-    }
-
-    nav a {
-        font-size: 11px !important;
-        padding: 5px 8px !important;
-        margin: 2px !important;
-    }
-
-    /* 3. HERO SECTION: Prevents text from being cut off */
-    .hero-section, .main-container {
-        height: auto !important;
-        min-height: 100vh !important;
-        padding: 80px 20px 40px 20px !important;
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-    }
-
-    h1, .main-title {
-        font-size: 24px !important;
-        text-align: center !important;
-        line-height: 1.2 !important;
-        width: 100% !important;
-    }
-
-    /* 4. CONTENT SECTIONS: Forces 'hidden' pages to show up */
-    section, .page-section, .tab-content {
-        display: block !important; /* Forces sections to exist */
-        visibility: visible !important;
-        opacity: 1 !important;
-        width: 100% !important;
-        margin-bottom: 50px !important;
-    }
-
-    /* 5. THREE BARS: Stacks them vertically */
-    .about-bar {
-        flex-direction: column !important;
-        width: 100% !important;
-        gap: 15px !important;
-        padding: 15px !important;
-        margin: 30px 0 !important;
-        background: rgba(255, 255, 255, 0.05) !important;
-    }
-
-    /* 6. BIKE: Keeps it small and out of the way */
-    .bike-float {
-        width: 100px !important;
-        position: relative !important;
-        margin: 20px auto !important;
-        bottom: 0 !important;
-        right: 0 !important;
-        display: block !important;
-    }
-
-    /* 7. TABLES & CHARTS: Prevents horizontal breaking */
-    table, .chart-container, img {
-        width: 100% !important;
-        height: auto !important;
-        overflow-x: scroll !important;
-    }
-}
+<!-- MOBILE DRAWER -->
+<div class="mob-drawer" id="mobDrawer">
+  <button class="mob-nt on" data-mp="0">Overview</button>
+  <button class="mob-nt" data-mp="1">Data Overview</button>
+  <button class="mob-nt" data-mp="2">Data Cleaning</button>
+  <button class="mob-nt" data-mp="3">Exploratory Analysis</button>
+  <button class="mob-nt" data-mp="4">Brand Analysis</button>
+  <button class="mob-nt" data-mp="5">Research Answers</button>
+  <button class="mob-nt" data-mp="6">Conclusions</button>
+</div>
 
 <!-- WRAP -->
 <div class="wrap">
 
-<!-- ━━━━ PAGE 1: HERO ━━━━ -->
+<!-- ━━ PAGE 1: HERO ━━ -->
 <div class="page on" id="p1">
   <div class="hero">
-    <div class="h-left">
+    <div class="hero-content">
       <div class="h-eye">Data Analysis · bikes_data.csv · 2022–2026</div>
-      <div class="hook">"Most riders chase raw horsepower. But horsepower alone can be misleading efficiency tells the real story of engineering excellence."</div>
-      <div class="h-title">
-        WHICH SUPERBIKES<br>DELIVER THE <span class="ca">MOST</span><br>POWER PER CC?
-      </div>
-      <p class="h-sub">We analysed 400+ motorcycle models from 5 major brands to find which manufacturer squeezes the most horsepower from every cubic centimetre  the true measure of engineering mastery.</p>
+      <div class="hook">"Most riders chase raw horsepower. But efficiency tells the real engineering story."</div>
+      <div class="h-title">WHICH SUPERBIKES<br>DELIVER THE <span class="ca">MOST</span><br>POWER PER CC?</div>
+      <p class="h-sub">We analysed 400+ motorcycle models from 5 major brands to find who squeezes the most horsepower from every cubic centimetre — the true measure of engineering mastery.</p>
       <div class="h-stats" id="statsRow">
         <div class="hs"><div class="hs-icon">🏍️</div><div class="hs-v" id="sB">0</div><div class="hs-l">Brands</div></div>
         <div class="hs"><div class="hs-icon">📊</div><div class="hs-v" id="sM">0</div><div class="hs-l">Models</div></div>
-        <div class="hs"><div class="hs-icon">⚙️</div><div class="hs-v" id="sK">HP/CC</div><div class="hs-l">Key Metric</div></div>
+        <div class="hs"><div class="hs-icon">⚙️</div><div class="hs-v">HP/CC</div><div class="hs-l">Key Metric</div></div>
         <div class="hs"><div class="hs-icon">🔬</div><div class="hs-v" id="sR">0</div><div class="hs-l">Research Q's</div></div>
       </div>
       <div class="cta-row">
-        <button class="cta" onclick="go(1)">🚀 &nbsp;Explore the Insights</button>
+        <button class="cta" onclick="go(1)">🚀 Explore the Insights</button>
         <button class="cta-ghost" onclick="go(6)">📋 About This Project</button>
       </div>
     </div>
+  </div>
 
-<!-- ━━━━ PAGE 2: DATA OVERVIEW ━━━━ -->
-<div class="page" id="p2">
-  <div class="ph">
-    <div class="ph-tag">Step 01 · Where the Data Comes From</div>
-    <div class="ph-h">THE <span>DATASET</span></div>
-    <p class="ph-p">We used a publicly available motorcycle specifications dataset covering 2022–2026 models. Before any analysis, we needed to understand what the data looked like  and what needed fixing.</p>
-  </div>
-  <div class="g4 mb">
-    <div class="kpi kp"><div class="kpi-l">Source</div><div class="kpi-v">GitHub</div><div class="kpi-s">bikes_data.csv</div><span class="badge bp">Public dataset</span></div>
-    <div class="kpi kc"><div class="kpi-l">Years Covered</div><div class="kpi-v">2022–26</div><div class="kpi-s">Recent models only</div><span class="badge bc">5 year span</span></div>
-    <div class="kpi kg"><div class="kpi-l">Brands Studied</div><div class="kpi-v">5</div><div class="kpi-s">Filtered from wider set</div><span class="badge bg-b">Focused scope</span></div>
-    <div class="kpi km"><div class="kpi-l">Core Metric</div><div class="kpi-v">HP ÷ CC</div><div class="kpi-s">Power per cc = efficiency</div><span class="badge bm">Derived</span></div>
-  </div>
-  <div class="g2 mb">
-    <div class="card">
-      <div class="ct">What Each Column Means</div>
-      <table class="dt">
-        <thead><tr><th>Column</th><th>What It Is</th><th>Issue Found?</th></tr></thead>
-        <tbody>
-          <tr><td>Company</td><td>The brand name</td><td style="color:var(--green);">✓ Clean</td></tr>
-          <tr><td>Model</td><td>Specific bike model</td><td style="color:var(--green);">✓ Clean</td></tr>
-          <tr><td>Number of cc</td><td>Engine size in cubic centimetres</td><td style="color:var(--gold);">⚠ Needed type conversion</td></tr>
-          <tr><td>Horsepower</td><td>Engine power output</td><td style="color:var(--pink);">✗ Mixed formats — needed fixing</td></tr>
-          <tr><td>Year</td><td>Model year</td><td style="color:var(--green);">✓ Clean</td></tr>
-          <tr><td>Price, Torque, etc.</td><td>Other specs</td><td style="color:var(--muted);">Not used in this analysis</td></tr>
-        </tbody>
-      </table>
-      <div class="insight">
-        <div><div style="font-weight:600;color:var(--pink2);margin-bottom:3px;font-size:12.5px;">💡 Why does this matter?</div><div class="insight-d">If we used raw data as-is, we'd be comparing apples to oranges — some HP values are in European units (PS), others have RPM info attached. Dirty data leads to wrong conclusions.</div></div>
-      </div>
+  <!-- Brand strip -->
+  <div class="b-strip">
+    <div class="bs" onclick="go(4)">
+      <div class="bs-tip">🏆 #1 Overall · 0.1518 HP/CC</div>
+      <div class="bs-bar" style="background:var(--kaw);"></div>
+      <div class="bs-name" style="color:var(--kaw);">KAWASAKI</div>
+      <div class="bs-eff">0.1518 HP/CC</div>
     </div>
-    <div>
-      <div class="card mb">
-        <div class="ct">The Horsepower Problem — Real Examples</div>
-        <p style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.6;">The Horsepower column looked like this in the raw dataset:</p>
-        <div style="background:#060003;border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:'Courier New',monospace;font-size:12px;line-height:1.8;color:#C0A0B0;">
-          <span style="color:#FF5CA8;">'100 hp'</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#554;"> → Simple. Extract 100.</span><br>
-          <span style="color:#FF5CA8;">'39 PS @ 11000 rpm'</span>&nbsp;<span style="color:#554;"> → PS unit + RPM noise.</span><br>
-          <span style="color:#FF5CA8;">'189.9 HP'</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#554;"> → Decimal value. Fine once extracted.</span><br>
-          <span style="color:#FF5CA8;">'75.6 PS @ 8000 rpm'</span><span style="color:#554;"> → Both problems at once.</span>
-        </div>
-      </div>
+    <div class="bs" onclick="go(4)">
+      <div class="bs-tip">#2 Overall · 0.1504 HP/CC</div>
+      <div class="bs-bar" style="background:var(--yam);"></div>
+      <div class="bs-name" style="color:#6677DD;">YAMAHA</div>
+      <div class="bs-eff">0.1504 HP/CC</div>
+    </div>
+    <div class="bs" onclick="go(4)">
+      <div class="bs-tip">#3 Overall · 0.1440 HP/CC</div>
+      <div class="bs-bar" style="background:var(--honda);"></div>
+      <div class="bs-name" style="color:var(--honda);">HONDA</div>
+      <div class="bs-eff">0.1440 HP/CC</div>
+    </div>
+    <div class="bs" onclick="go(4)">
+      <div class="bs-tip">#4 Overall · 0.1380 HP/CC</div>
+      <div class="bs-bar" style="background:var(--bmw);"></div>
+      <div class="bs-name" style="color:var(--bmw);">BMW</div>
+      <div class="bs-eff">0.1380 HP/CC</div>
+    </div>
+    <div class="bs" onclick="go(4)">
+      <div class="bs-tip">#5 Overall · 0.1340 HP/CC</div>
+      <div class="bs-bar" style="background:var(--suz);"></div>
+      <div class="bs-name" style="color:var(--suz);">SUZUKI</div>
+      <div class="bs-eff">0.1340 HP/CC</div>
+    </div>
+  </div>
+</div>
+
+<!-- ━━ PAGE 2: DATA OVERVIEW ━━ -->
+<div class="page" id="p2">
+  <div class="page-inner">
+    <div class="ph">
+      <div class="ph-tag">Step 01</div>
+      <div class="ph-h">THE <span>DATASET</span></div>
+      <p class="ph-p">We used a public motorcycle specs dataset covering 2022–2026 models. Here's what was in it — and what needed fixing before any analysis.</p>
+    </div>
+    <div class="g4 mb">
+      <div class="kpi kp"><div class="kpi-l">Source</div><div class="kpi-v">GitHub</div><div class="kpi-s">bikes_data.csv</div><span class="badge bp">Public</span></div>
+      <div class="kpi kc"><div class="kpi-l">Years</div><div class="kpi-v">2022–26</div><div class="kpi-s">Recent models only</div><span class="badge bc">5 years</span></div>
+      <div class="kpi kg"><div class="kpi-l">Brands</div><div class="kpi-v">5</div><div class="kpi-s">Filtered from wider set</div><span class="badge bg-b">Focused</span></div>
+      <div class="kpi km"><div class="kpi-l">Core Metric</div><div class="kpi-v">HP÷CC</div><div class="kpi-s">Efficiency score</div><span class="badge bm">Derived</span></div>
+    </div>
+    <div class="g2 mb">
       <div class="card">
-        <div class="ct">Why We Focused on 5 Brands</div>
-        <p style="font-size:13px;color:var(--muted);line-height:1.65;">The raw dataset includes many brands — Aprilia, Ducati, KTM and more. We focused on the <strong style="color:var(--text);">5 dominant global manufacturers</strong> that compete head-to-head across all engine classes, ensuring a fair and meaningful comparison.</p>
+        <div class="ct">What Each Column Means</div>
+        <div class="tbl-wrap">
+        <table class="dt">
+          <thead><tr><th>Column</th><th>What It Is</th><th>Issue?</th></tr></thead>
+          <tbody>
+            <tr><td>Company</td><td>Brand name</td><td style="color:var(--green);">✓ Clean</td></tr>
+            <tr><td>Model</td><td>Bike model name</td><td style="color:var(--green);">✓ Clean</td></tr>
+            <tr><td>Number of cc</td><td>Engine size in cc</td><td style="color:var(--gold);">⚠ Needed conversion</td></tr>
+            <tr><td>Horsepower</td><td>Power output</td><td style="color:var(--pink);">✗ Mixed formats</td></tr>
+            <tr><td>Year</td><td>Model year</td><td style="color:var(--green);">✓ Clean</td></tr>
+            <tr><td>Price, Torque…</td><td>Other specs</td><td style="color:var(--muted);">Not used here</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <div class="insight"><strong style="color:var(--pink2);">💡 Why this matters:</strong> Using raw data as-is would mean comparing apples to oranges — some HP values are in European units (PS), some have RPM info attached. Dirty data = wrong conclusions.</div>
+      </div>
+      <div>
+        <div class="card mb">
+          <div class="ct">The Horsepower Problem — Real Examples</div>
+          <p style="font-size:12.5px;color:var(--muted);margin-bottom:10px;line-height:1.55;">The Horsepower column was stored as plain text, completely inconsistently:</p>
+          <div style="background:#060003;border:1px solid var(--border);border-radius:7px;padding:12px 14px;font-family:'Courier New',monospace;font-size:11.5px;line-height:1.85;color:#C0A0B0;">
+            <span style="color:#FF5CA8;">'100 hp'</span><span style="color:#443;"> → simple, extract 100</span><br>
+            <span style="color:#FF5CA8;">'39 PS @ 11000 rpm'</span><span style="color:#443;"> → PS unit + RPM noise</span><br>
+            <span style="color:#FF5CA8;">'75.6 PS @ 8000 rpm'</span><span style="color:#443;"> → both problems at once</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ct">Why We Focused on 5 Brands</div>
+          <p style="font-size:12.5px;color:var(--muted);line-height:1.65;">The raw data includes Aprilia, Ducati, KTM and more. We focused on the <strong style="color:var(--text);">5 dominant global manufacturers</strong> that compete across all engine classes — ensuring a fair, head-to-head comparison.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -533,38 +611,40 @@ z-index: 100;
   </div>
 </div>
 
-<!-- ━━━━ PAGE 3: CLEANING ━━━━ -->
+<!-- ━━ PAGE 3: CLEANING ━━ -->
 <div class="page" id="p3">
-  <div class="ph">
-    <div class="ph-tag">Step 02 · Making the Data Usable</div>
-    <div class="ph-h">DATA <span>CLEANING</span></div>
-    <p class="ph-p">Before drawing any conclusions, we fixed four major data quality issues. Here's exactly what we did — and why each step matters.</p>
-  </div>
-  <div class="g2 mb">
-    <div>
-      <div class="card mb">
-        <div class="ct">The 4-Step Cleaning Process</div>
-        <div class="step"><div class="step-n">1</div><div><div class="step-t">Extract the number from messy text</div><div class="step-d">We used a pattern-matching rule to pull the first number out of any text string. So <code>'39 PS @ 11000 rpm'</code> becomes simply <code>39</code> — regardless of what comes before or after it.</div></div></div>
-        <div class="step"><div class="step-n">2</div><div><div class="step-t">Convert European PS units to HP</div><div class="step-d">Some manufacturers report power in PS (the German unit). 1 PS = 0.9863 HP. We detected which values used PS and applied the conversion so every bike speaks the same unit.</div></div></div>
-        <div class="step"><div class="step-n">3</div><div><div class="step-t">Calculate the Efficiency score</div><div class="step-d">With clean HP and CC values, we calculated: <code>Efficiency = HP ÷ CC</code>. This single number normalises power across different engine sizes — the heart of our analysis.</div></div></div>
-        <div class="step"><div class="step-n">4</div><div><div class="step-t">Remove physically impossible values</div><div class="step-d">Real motorcycles score between 0.05 and 0.25 HP/CC. We removed any records outside this range — including one BMW entry that showed <strong style="color:var(--pink);">140 HP/CC</strong>, clearly a data typo.</div></div></div>
-      </div>
+  <div class="page-inner">
+    <div class="ph">
+      <div class="ph-tag">Step 02</div>
+      <div class="ph-h">DATA <span>CLEANING</span></div>
+      <p class="ph-p">Before drawing any conclusions, we fixed four major data quality issues. Here's exactly what we did and why each step mattered.</p>
     </div>
-    <div>
-      <div class="card mb">
-        <div class="ct">What "Efficiency" Actually Means</div>
-        <div style="background:#060003;border:1px solid var(--border);border-radius:8px;padding:22px;text-align:center;margin-bottom:12px;">
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--pink);letter-spacing:2px;text-shadow:0 0 30px rgba(255,30,120,0.3);">HP ÷ CC</div>
-          <div style="font-size:12px;color:var(--muted);margin-top:6px;">Horsepower divided by Engine Size (cc)</div>
-          <div style="margin-top:16px;display:flex;justify-content:center;gap:28px;">
-            <div style="text-align:center;"><div style="font-size:11px;color:var(--muted);">Example A</div><div style="font-size:13.5px;color:var(--text);margin-top:4px;">200 HP ÷ 999cc</div><div style="font-size:22px;font-weight:700;color:var(--pink);margin-top:4px;">= 0.200</div><div style="font-size:10px;color:var(--muted);">Very high</div></div>
-            <div style="width:1px;background:var(--border);"></div>
-            <div style="text-align:center;"><div style="font-size:11px;color:var(--muted);">Example B</div><div style="font-size:13.5px;color:var(--text);margin-top:4px;">39 HP ÷ 296cc</div><div style="font-size:22px;font-weight:700;color:var(--green);margin-top:4px;">= 0.132</div><div style="font-size:10px;color:var(--muted);">Entry-level</div></div>
-          </div>
+    <div class="g2 mb">
+      <div>
+        <div class="card mb">
+          <div class="ct">4-Step Cleaning Process</div>
+          <div class="step"><div class="step-n">1</div><div><div class="step-t">Extract the number from messy text</div><div class="step-d">A pattern-matching rule (regex) pulls the first number from any string. <code>'39 PS @ 11000 rpm'</code> becomes <code>39</code>.</div></div></div>
+          <div class="step"><div class="step-n">2</div><div><div class="step-t">Convert European PS units to HP</div><div class="step-d">1 PS = 0.9863 HP. We detected PS values and applied the conversion so every bike uses the same unit.</div></div></div>
+          <div class="step"><div class="step-n">3</div><div><div class="step-t">Calculate the Efficiency score</div><div class="step-d"><code>Efficiency = HP ÷ CC</code>. This normalises power across engine sizes — the heart of our analysis.</div></div></div>
+          <div class="step"><div class="step-n">4</div><div><div class="step-t">Remove impossible values</div><div class="step-d">Real bikes score 0.05–0.25 HP/CC. One BMW showed <strong style="color:var(--pink);">140 HP/CC</strong> — a clear typo. Removed before all calculations.</div></div></div>
         </div>
-        <div class="insight"><div><div class="insight-d"><strong style="color:var(--pink2);">Why not just use raw HP?</strong> A 1000cc engine with 200HP sounds impressive, but a 400cc engine with 55HP is actually tuned more aggressively relative to its size. HP/CC reveals engineering skill — not just engine size.</div></div></div>
+        <div class="alert"><div><div class="alert-t">⚠ Critical Outlier Removed</div><div class="alert-d">BMW record with Efficiency = 140 HP/CC — physically impossible (best real bikes ~0.22). Data entry error. Removed to protect result integrity.</div></div></div>
       </div>
-      <div class="alert"><div><div class="alert-t">⚠ Critical Outlier Removed</div><div class="alert-d">One BMW record showed an efficiency of <strong style="color:#FF6680;">140 HP/CC</strong> — physically impossible (the best real bikes reach ~0.22). A clear data typo. Removed before all calculations to protect the integrity of our findings.</div></div></div>
+      <div>
+        <div class="card mb">
+          <div class="ct">What "Efficiency" Actually Means</div>
+          <div style="background:#060003;border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center;margin-bottom:10px;">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:44px;color:var(--pink);letter-spacing:2px;text-shadow:0 0 28px rgba(255,30,120,0.3);">HP ÷ CC</div>
+            <div style="font-size:11.5px;color:var(--muted);margin-top:5px;">Horsepower divided by Engine Size</div>
+            <div style="margin-top:14px;display:flex;justify-content:center;gap:22px;">
+              <div style="text-align:center;"><div style="font-size:10.5px;color:var(--muted);">Big bike</div><div style="font-size:12.5px;color:var(--text);margin-top:3px;">200HP ÷ 999cc</div><div style="font-size:20px;font-weight:700;color:var(--pink);margin-top:3px;">= 0.200</div></div>
+              <div style="width:1px;background:var(--border);"></div>
+              <div style="text-align:center;"><div style="font-size:10.5px;color:var(--muted);">Small bike</div><div style="font-size:12.5px;color:var(--text);margin-top:3px;">39HP ÷ 296cc</div><div style="font-size:20px;font-weight:700;color:var(--green);margin-top:3px;">= 0.132</div></div>
+            </div>
+          </div>
+          <div class="insight"><strong style="color:var(--pink2);">💡 Why not just use raw HP?</strong> HP/CC reveals engineering skill — not just engine size. A tuned 400cc engine can outscore a lazy 1000cc engine.</div>
+        </div>
+      </div>
     </div>
   </div>
   <div class="pnav">
@@ -573,35 +653,36 @@ z-index: 100;
   </div>
 </div>
 
-<!-- ━━━━ PAGE 4: EDA ━━━━ -->
+<!-- ━━ PAGE 4: EDA ━━ -->
 <div class="page" id="p4">
-  <div class="ph">
-    <div class="ph-tag">Step 03 · First Look at the Numbers</div>
-    <div class="ph-h">WHAT WE <span>DISCOVERED</span></div>
-    <p class="ph-p">With clean data in hand, two major patterns emerged immediately — telling a clear story about the relationship between engine size, power, and efficiency.</p>
-  </div>
-  <div class="g4 mb">
-    <div class="kpi kc"><div class="kpi-l">Engine Size → HP</div><div class="kpi-v">+0.79</div><div class="kpi-s">Strong positive link</div><span class="badge bc">Bigger = more power</span></div>
-    <div class="kpi kp"><div class="kpi-l">Engine Size → Efficiency</div><div class="kpi-v">−0.32</div><div class="kpi-s">They move opposite</div><span class="badge bp">Bigger ≠ more efficient</span></div>
-    <div class="kpi kg"><div class="kpi-l">Most Models</div><div class="kpi-v">Honda</div><div class="kpi-s">~95 models in dataset</div><span class="badge bg-b">Widest range</span></div>
-    <div class="kpi km"><div class="kpi-l">Year → HP Trend</div><div class="kpi-v">+0.10</div><div class="kpi-s">Newer = slightly stronger</div><span class="badge bm">Mild improvement</span></div>
-  </div>
-  <div class="g2 mb">
-    <div class="card">
-      <div class="ct">How Many Models Did We Study Per Brand?</div>
-      <div class="cw" style="height:185px;"><canvas id="cBrandCount"></canvas></div>
-      <div class="insight"><div class="insight-d">Honda has the largest portfolio (~95 models), giving us the most data. Suzuki has fewer (~65) but is still well-represented across engine classes.</div></div>
+  <div class="page-inner">
+    <div class="ph">
+      <div class="ph-tag">Step 03</div>
+      <div class="ph-h">WHAT WE <span>DISCOVERED</span></div>
+      <p class="ph-p">With clean data, two major patterns emerged immediately about engine size, power, and efficiency.</p>
     </div>
-    <div class="card">
-      <div class="ct">How Do Key Numbers Relate to Each Other?</div>
-      <div id="corrDiv"></div>
-      <div class="insight" style="margin-top:10px;"><div class="insight-d"><strong style="color:var(--pink2);">+0.79</strong> means engine size and horsepower move together strongly. <strong style="color:var(--gold);">−0.32</strong> means as engines grow, their efficiency score tends to fall — the diminishing returns effect we'll confirm next.</div></div>
+    <div class="g4 mb">
+      <div class="kpi kc"><div class="kpi-l">Engine Size → HP</div><div class="kpi-v">+0.79</div><div class="kpi-s">Strong positive link</div><span class="badge bc">Bigger = more power</span></div>
+      <div class="kpi kp"><div class="kpi-l">Engine Size → Efficiency</div><div class="kpi-v">−0.32</div><div class="kpi-s">Negative correlation</div><span class="badge bp">Bigger ≠ efficient</span></div>
+      <div class="kpi kg"><div class="kpi-l">Most Models</div><div class="kpi-v">Honda</div><div class="kpi-s">~95 models studied</div><span class="badge bg-b">Widest range</span></div>
+      <div class="kpi km"><div class="kpi-l">Year → HP</div><div class="kpi-v">+0.10</div><div class="kpi-s">Newer = slightly stronger</div><span class="badge bm">Mild trend</span></div>
     </div>
-  </div>
-  <div class="card mb">
-    <div class="ct">Engine Size vs Horsepower — Every Dot is One Real Bike</div>
-    <div class="cw" style="height:210px;"><canvas id="cScatter"></canvas></div>
-    <div style="margin-top:10px;font-size:13px;color:var(--muted);line-height:1.6;">The upward trend is clear — bigger engines produce more power. But notice how the dots spread out at the top: at 1000cc+, the relationship becomes less predictable, hinting at the diminishing efficiency returns we measure next.</div>
+    <div class="g2 mb">
+      <div class="card">
+        <div class="ct">Models Per Brand</div>
+        <div class="cw" style="height:175px;"><canvas id="cBrandCount"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="ct">How the Numbers Relate</div>
+        <div id="corrDiv"></div>
+        <div class="insight" style="margin-top:8px;"><strong style="color:var(--pink2);">+0.79</strong> = CC and HP move together strongly. <strong style="color:var(--gold);">−0.32</strong> = as engines grow, efficiency drops — the diminishing returns effect.</div>
+      </div>
+    </div>
+    <div class="card mb">
+      <div class="ct">Engine Size vs Horsepower — Every Dot is One Real Bike</div>
+      <div class="cw" style="height:190px;"><canvas id="cScatter"></canvas></div>
+      <div style="margin-top:8px;font-size:12.5px;color:var(--muted);line-height:1.55;">Clear upward trend confirms bigger engines = more power. But notice the spread at 1000cc+ — at high displacement the relationship becomes less predictable, hinting at the diminishing returns effect.</div>
+    </div>
   </div>
   <div class="pnav">
     <button class="pn" onclick="go(2)">← Data Cleaning</button>
@@ -609,35 +690,37 @@ z-index: 100;
   </div>
 </div>
 
-<!-- ━━━━ PAGE 5: BRAND ANALYSIS ━━━━ -->
+<!-- ━━ PAGE 5: BRAND ANALYSIS ━━ -->
 <div class="page" id="p5">
-  <div class="ph">
-    <div class="ph-tag">Step 04 · The Main Comparison</div>
-    <div class="ph-h">WHO MAKES THE <span>MOST EFFICIENT</span> ENGINES?</div>
-    <p class="ph-p">Here's how each brand stacks up on our HP/CC metric — overall and broken down by engine class. Click a brand card to highlight it.</p>
-  </div>
-  <div class="brand-grid-int mb" id="brandCards">
-    <div class="brand-card sel" data-b="0"><div class="bc-dot" style="background:var(--kaw);"></div><div class="bc-name">KAWASAKI</div><div class="bc-stat">0.1518</div><div class="bc-label">mean HP/CC · #1</div></div>
-    <div class="brand-card" data-b="1"><div class="bc-dot" style="background:var(--yam);"></div><div class="bc-name">YAMAHA</div><div class="bc-stat">0.1504</div><div class="bc-label">mean HP/CC · #2</div></div>
-    <div class="brand-card" data-b="2"><div class="bc-dot" style="background:var(--honda);"></div><div class="bc-name">HONDA</div><div class="bc-stat">0.1440</div><div class="bc-label">mean HP/CC · #3</div></div>
-    <div class="brand-card" data-b="3"><div class="bc-dot" style="background:var(--bmw);"></div><div class="bc-name">BMW</div><div class="bc-stat">0.1380</div><div class="bc-label">mean HP/CC · #4</div></div>
-    <div class="brand-card" data-b="4"><div class="bc-dot" style="background:var(--suz);"></div><div class="bc-name">SUZUKI</div><div class="bc-stat">0.1340</div><div class="bc-label">mean HP/CC · #5</div></div>
-  </div>
-  <div class="g2 mb">
-    <div class="card">
-      <div class="ct">Overall Efficiency — All Engine Sizes Combined</div>
-      <div class="cw" style="height:195px;"><canvas id="cBrandEff"></canvas></div>
+  <div class="page-inner">
+    <div class="ph">
+      <div class="ph-tag">Step 04</div>
+      <div class="ph-h">WHO MAKES THE <span>MOST EFFICIENT</span> ENGINES?</div>
+      <p class="ph-p">Here's how each brand stacks up on HP/CC — overall and by engine class. Click a brand to highlight it.</p>
     </div>
-    <div class="card">
-      <div class="ct">Does Efficiency Drop as Engines Get Bigger?</div>
-      <div class="cw" style="height:195px;"><canvas id="cClassLine"></canvas></div>
-      <div style="margin-top:8px;font-size:12.5px;color:var(--muted);line-height:1.6;">Yes — clearly. Small bikes (&lt;400cc) are actually tuned more aggressively per cc than 1000cc superbikes. The engineering ceiling gets harder to push as displacement grows.</div>
+    <div class="brand-grid-int mb" id="brandCards">
+      <div class="brand-card sel" data-b="0"><div class="bc-dot" style="background:var(--kaw);"></div><div class="bc-name">KAWASAKI</div><div class="bc-stat">0.1518</div><div class="bc-label">HP/CC · #1</div></div>
+      <div class="brand-card" data-b="1"><div class="bc-dot" style="background:var(--yam);"></div><div class="bc-name">YAMAHA</div><div class="bc-stat">0.1504</div><div class="bc-label">HP/CC · #2</div></div>
+      <div class="brand-card" data-b="2"><div class="bc-dot" style="background:var(--honda);"></div><div class="bc-name">HONDA</div><div class="bc-stat">0.1440</div><div class="bc-label">HP/CC · #3</div></div>
+      <div class="brand-card" data-b="3"><div class="bc-dot" style="background:var(--bmw);"></div><div class="bc-name">BMW</div><div class="bc-stat">0.1380</div><div class="bc-label">HP/CC · #4</div></div>
+      <div class="brand-card" data-b="4"><div class="bc-dot" style="background:var(--suz);"></div><div class="bc-name">SUZUKI</div><div class="bc-stat">0.1340</div><div class="bc-label">HP/CC · #5</div></div>
     </div>
-  </div>
-  <div class="card mb">
-    <div class="ct">Efficiency Score by Brand and Engine Category</div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:10px;line-height:1.55;">Each cell shows average HP/CC. The brighter the cell, the better the efficiency. BMW has no entry-level models in our dataset.</p>
-    <div id="hmDiv"></div>
+    <div class="g2 mb">
+      <div class="card">
+        <div class="ct">Overall Efficiency — All Engine Sizes</div>
+        <div class="cw" style="height:175px;"><canvas id="cBrandEff"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="ct">Does Efficiency Drop as Engines Grow?</div>
+        <div class="cw" style="height:175px;"><canvas id="cClassLine"></canvas></div>
+        <div style="margin-top:7px;font-size:12px;color:var(--muted);line-height:1.55;">Yes — small bikes are tuned more aggressively per cc than 1000cc superbikes.</div>
+      </div>
+    </div>
+    <div class="card mb">
+      <div class="ct">Efficiency Score by Brand and Engine Category</div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:8px;">Brighter cell = more efficient. BMW has no entry-level models in our dataset.</p>
+      <div id="hmDiv"></div>
+    </div>
   </div>
   <div class="pnav">
     <button class="pn" onclick="go(3)">← Exploratory Analysis</button>
@@ -645,126 +728,123 @@ z-index: 100;
   </div>
 </div>
 
-<!-- ━━━━ PAGE 6: RESEARCH QUESTIONS ━━━━ -->
+<!-- ━━ PAGE 6: RESEARCH QUESTIONS ━━ -->
 <div class="page" id="p6">
-  <div class="ph">
-    <div class="ph-tag">Step 05 · Three Questions, Three Answers</div>
-    <div class="ph-h">THE <span>FINDINGS</span></div>
-    <p class="ph-p">We set three specific research questions before starting. Here's what the data answered — in plain English, with the charts to prove it.</p>
-  </div>
+  <div class="page-inner">
+    <div class="ph">
+      <div class="ph-tag">Step 05</div>
+      <div class="ph-h">THE <span>FINDINGS</span></div>
+      <p class="ph-p">We set three research questions before starting. Here's what the data answered — in plain English, with the charts to prove it.</p>
+    </div>
 
-  <div class="card mb" style="border-left:3px solid var(--green);border-radius:0 10px 10px 0;">
-    <div style="display:flex;gap:24px;align-items:flex-start;">
-      <div style="flex:1;">
-        <div style="font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--green);margin-bottom:8px;">Question 01</div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--text);margin-bottom:10px;">Does Kawasaki make the most efficient small bikes (under 400cc)?</div>
-        <p style="font-size:13.5px;color:#B09AAC;line-height:1.7;max-width:450px;"><strong style="color:var(--text);">Yes.</strong> Kawasaki's Ninja 300 and Ninja 400 score <strong style="color:var(--green);">0.122 HP per CC</strong> — the highest efficiency of any brand in the small-bike class. Kawasaki deliberately over-engineers their entry bikes so the "Ninja" name carries real performance credibility even at budget prices.</p>
-        <span class="badge bg-b" style="margin-top:10px;display:inline-block;font-size:11px;padding:5px 14px;">✓ CONFIRMED — Kawasaki #1 in small bikes</span>
+    <div class="rq-card rg mb">
+      <div class="rq-inner">
+        <div class="rq-text">
+          <div class="rq-num">Question 01</div>
+          <div class="rq-q">Does Kawasaki make the most efficient small bikes (under 400cc)?</div>
+          <p class="rq-a"><strong style="color:var(--text);">Yes.</strong> Kawasaki's Ninja 300 and Ninja 400 score <strong style="color:var(--green);">0.122 HP per CC</strong> — the highest of any brand below 400cc. Kawasaki deliberately over-engineers their entry bikes so the "Ninja" name carries real performance credibility at budget prices.</p>
+          <span class="badge bg-b" style="margin-top:8px;display:inline-block;font-size:10px;padding:4px 12px;">✓ CONFIRMED — Kawasaki #1 in small bikes</span>
+        </div>
+        <div class="rq-chart" style="width:240px;">
+          <div class="ct" style="margin-bottom:7px;">Small Bike Rankings</div>
+          <div class="cw" style="height:145px;"><canvas id="cEntry"></canvas></div>
+        </div>
       </div>
-      <div style="width:265px;flex-shrink:0;">
-        <div class="ct" style="margin-bottom:8px;">Small Bike Rankings (&lt;400cc)</div>
-        <div class="cw" style="height:165px;"><canvas id="cEntry"></canvas></div>
+    </div>
+
+    <div class="rq-card ry mb">
+      <div class="rq-inner">
+        <div class="rq-text">
+          <div class="rq-num">Question 02</div>
+          <div class="rq-q">Do bigger engines become less efficient per cc?</div>
+          <p class="rq-a"><strong style="color:var(--text);">Yes — the diminishing returns effect is real.</strong> Small 300cc bikes average <strong style="color:var(--gold);">0.148 HP/CC</strong>. Scale up to 1000cc and the average falls to <strong style="color:var(--gold);">0.132 HP/CC</strong>. Massive engines prioritise torque over efficiency per cc. Correlation r = −0.32 confirms this across hundreds of models.</p>
+          <span class="badge by" style="margin-top:8px;display:inline-block;font-size:10px;padding:4px 12px;">✓ CONFIRMED — r = −0.32 negative trend</span>
+        </div>
+        <div class="rq-chart" style="width:240px;">
+          <div class="ct" style="margin-bottom:7px;">Efficiency by Engine Class</div>
+          <div class="cw" style="height:145px;"><canvas id="cDim"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rq-card rp mb">
+      <div class="rq-inner">
+        <div class="rq-text">
+          <div class="rq-num">Question 03</div>
+          <div class="rq-q">How different are the top 1000cc bikes across brands in 2026?</div>
+          <p class="rq-a"><strong style="color:var(--text);">Barely different.</strong> Yamaha and Kawasaki tie at <strong style="color:var(--pink2);">~0.164 HP/CC</strong>, separated by just 0.0002. The #1-to-#5 gap is only 0.012. Modern engineering has hit a ceiling — all five brands are extracting near-maximum efficiency from similar engines.</p>
+          <span class="badge bp" style="margin-top:8px;display:inline-block;font-size:10px;padding:4px 12px;">~ NEAR PARITY — 0.012 gap across 5 brands</span>
+        </div>
+        <div class="rq-chart" style="width:240px;">
+          <div class="ct" style="margin-bottom:7px;">1000cc Shootout</div>
+          <div class="cw" style="height:145px;"><canvas id="cLiter"></canvas></div>
+        </div>
       </div>
     </div>
   </div>
-
-  <div class="card mb" style="border-left:3px solid var(--gold);border-radius:0 10px 10px 0;">
-    <div style="display:flex;gap:24px;align-items:flex-start;">
-      <div style="flex:1;">
-        <div style="font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;">Question 02</div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--text);margin-bottom:10px;">Do bigger engines become less efficient as they grow?</div>
-        <p style="font-size:13.5px;color:#B09AAC;line-height:1.7;max-width:450px;"><strong style="color:var(--text);">Yes — the "diminishing returns" effect is real.</strong> Small 300cc bikes average <strong style="color:var(--gold);">0.148 HP/CC</strong>. Scale up to a 1000cc superbike and the average falls to <strong style="color:var(--gold);">0.132 HP/CC</strong>. Why? Because massive engines prioritise torque and straight-line speed — not peak efficiency per cc. The correlation of <strong>r = −0.32</strong> confirms this across hundreds of models.</p>
-        <span class="badge by" style="margin-top:10px;display:inline-block;font-size:11px;padding:5px 14px;">✓ CONFIRMED — r = −0.32 negative trend</span>
-      </div>
-      <div style="width:265px;flex-shrink:0;">
-        <div class="ct" style="margin-bottom:8px;">Efficiency by Engine Size Class</div>
-        <div class="cw" style="height:165px;"><canvas id="cDim"></canvas></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card mb" style="border-left:3px solid var(--pink);border-radius:0 10px 10px 0;">
-    <div style="display:flex;gap:24px;align-items:flex-start;">
-      <div style="flex:1;">
-        <div style="font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--pink2);margin-bottom:8px;">Question 03</div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--text);margin-bottom:10px;">How different are the top 1000cc bikes across brands in 2026?</div>
-        <p style="font-size:13.5px;color:#B09AAC;line-height:1.7;max-width:450px;"><strong style="color:var(--text);">Barely different at all.</strong> Yamaha and Kawasaki are virtually tied at <strong style="color:var(--pink2);">~0.164 HP/CC</strong>, separated by just 0.0002. The entire gap from #1 (Yamaha) to #5 (BMW) is only 0.012. Modern engineering has essentially hit a ceiling at the 1000cc level — all five brands are extracting near-maximum efficiency from similar-sized engines.</p>
-        <span class="badge bp" style="margin-top:10px;display:inline-block;font-size:11px;padding:5px 14px;">~ NEAR PARITY — 0.012 gap across all 5 brands</span>
-      </div>
-      <div style="width:265px;flex-shrink:0;">
-        <div class="ct" style="margin-bottom:8px;">1000cc Class Shootout (950cc+)</div>
-        <div class="cw" style="height:165px;"><canvas id="cLiter"></canvas></div>
-      </div>
-    </div>
-  </div>
-
   <div class="pnav">
     <button class="pn" onclick="go(4)">← Brand Analysis</button>
     <button class="pn pr" onclick="go(6)">Conclusions →</button>
   </div>
 </div>
 
-<!-- ━━━━ PAGE 7: CONCLUSIONS ━━━━ -->
+<!-- ━━ PAGE 7: CONCLUSIONS ━━ -->
 <div class="page" id="p7">
-  <div class="ph">
-    <div class="ph-tag">Step 06 · Summary & About This Project</div>
-    <div class="ph-h">THE <span>VERDICT</span></div>
-    <p class="ph-p">All three questions answered. One clear winner. A methodology that can be applied to any engineering dataset to find who truly maximises performance.</p>
-  </div>
-
-  <div class="trophy mb">
-    <div class="t-icon">🏆</div>
-    <div class="t-title">KAWASAKI — EFFICIENCY KING</div>
-    <div class="t-sub">Highest mean HP/CC overall · Dominant in small-bike class · Tied with Yamaha at the 1000cc level<br>The Ninja name isn't just marketing — the data proves it.</div>
-  </div>
-
-  <div class="g3 mb">
-    <div class="verd vg"><div class="v-rq">Finding 01</div><div class="v-a">Kawasaki wins the small-bike class</div><div class="v-d">0.122 HP/CC in the &lt;400cc segment. Ninja 300 and 400 are tuned more aggressively per cc than any other brand at this price point.</div><div class="vtag" style="background:rgba(0,232,122,.12);color:var(--green);">✓ Confirmed</div></div>
-    <div class="verd vp"><div class="v-rq">Finding 02</div><div class="v-a">Bigger engines are less efficient per cc</div><div class="v-d">Entry bikes extract ~12% more HP per cc than 1000cc superbikes. Correlation r = −0.32 confirms diminishing returns across all brands.</div><div class="vtag" style="background:rgba(255,30,120,.12);color:var(--pink2);">✓ Confirmed</div></div>
-    <div class="verd vc"><div class="v-rq">Finding 03</div><div class="v-a">1000cc bikes are engineering equals</div><div class="v-d">Yamaha & Kawasaki converge at ~0.164 HP/CC. All 5 brands fit within a 0.012 range — the performance ceiling has been reached.</div><div class="vtag" style="background:rgba(0,212,255,.12);color:var(--cyan);">~ Near Parity</div></div>
-  </div>
-
-  <!-- About this project -->
-  <div class="about-bar mb">
-    <div class="about-ava">MS</div>
-    <div style="flex:1;">
-      <div class="about-title">About This Project</div>
-      <div class="about-p">This project demonstrates end-to-end data analysis: wrangling messy real-world data with Pandas & Regex, engineering a normalised metric (HP/CC), running correlation analysis, detecting outliers, and segmenting insights by brand and class — then communicating it in plain English for any audience.</div>
-      <div class="about-links">
-        <button class="alink">📓 Jupyter Notebook</button>
-        <button class="alink">💻 GitHub Repository</button>
-        <button class="alink">📊 bikes_data.csv</button>
+  <div class="page-inner">
+    <div class="ph">
+      <div class="ph-tag">Step 06</div>
+      <div class="ph-h">THE <span>VERDICT</span></div>
+      <p class="ph-p">All three questions answered. One clear winner. A methodology that applies to any engineering comparison dataset.</p>
+    </div>
+    <div class="trophy mb">
+      <div class="t-icon">🏆</div>
+      <div class="t-title">KAWASAKI — EFFICIENCY KING</div>
+      <div class="t-sub">Highest mean HP/CC overall · Dominant in small bikes · Tied with Yamaha at 1000cc<br>The Ninja name isn't just marketing — the data proves it.</div>
+    </div>
+    <div class="g3 mb">
+      <div class="verd vg"><div class="v-rq">Finding 01</div><div class="v-a">Kawasaki wins small bikes</div><div class="v-d">0.122 HP/CC in &lt;400cc — highest of any brand. Ninja 300/400 punch above their price point.</div><div class="vtag" style="background:rgba(0,232,122,.12);color:var(--green);">✓ Confirmed</div></div>
+      <div class="verd vp"><div class="v-rq">Finding 02</div><div class="v-a">Bigger engines lose efficiency</div><div class="v-d">Entry bikes extract ~12% more HP per cc than superbikes. r = −0.32 confirms diminishing returns.</div><div class="vtag" style="background:rgba(255,30,120,.12);color:var(--pink2);">✓ Confirmed</div></div>
+      <div class="verd vc"><div class="v-rq">Finding 03</div><div class="v-a">1000cc bikes are equals</div><div class="v-d">Yamaha & Kawasaki at ~0.164 HP/CC. All 5 brands within 0.012 — the ceiling has been reached.</div><div class="vtag" style="background:rgba(0,212,255,.12);color:var(--cyan);">~ Near Parity</div></div>
+    </div>
+    <div class="about-bar mb">
+      <div class="about-ava">MS</div>
+      <div style="flex:1;min-width:0;">
+        <div class="about-title">About This Project</div>
+        <div class="about-p">End-to-end data analysis: messy real-world data wrangling with Pandas & Regex, feature engineering (HP/CC), correlation analysis, outlier detection, and segmented brand insights — communicated in plain English for any audience.</div>
+        <div class="about-links">
+          <button class="alink">📓 Jupyter Notebook</button>
+          <button class="alink">💻 GitHub Repo</button>
+          <button class="alink">📊 Dataset</button>
+        </div>
+      </div>
+    </div>
+    <div class="g2 mb">
+      <div class="card">
+        <div class="ct">Skills Demonstrated</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
+          <div style="background:var(--faint);border-radius:6px;padding:9px 11px;"><div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;">🐍 Python / Pandas</div><div style="font-size:11px;color:var(--muted);">Data loading, cleaning, transform</div></div>
+          <div style="background:var(--faint);border-radius:6px;padding:9px 11px;"><div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;">🔍 Regular Expressions</div><div style="font-size:11px;color:var(--muted);">Extract data from messy strings</div></div>
+          <div style="background:var(--faint);border-radius:6px;padding:9px 11px;"><div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;">⚙️ Feature Engineering</div><div style="font-size:11px;color:var(--muted);">Create HP/CC efficiency metric</div></div>
+          <div style="background:var(--faint);border-radius:6px;padding:9px 11px;"><div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;">📈 Statistical Analysis</div><div style="font-size:11px;color:var(--muted);">Correlation, outlier detection</div></div>
+          <div style="background:var(--faint);border-radius:6px;padding:9px 11px;"><div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;">🎨 Data Visualisation</div><div style="font-size:11px;color:var(--muted);">Scatter, bar, heatmap charts</div></div>
+          <div style="background:var(--faint);border-radius:6px;padding:9px 11px;"><div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;">🌐 Data Storytelling</div><div style="font-size:11px;color:var(--muted);">Clear insights for any audience</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ct">Final Leaderboard</div>
+        <table class="dt">
+          <thead><tr><th>Rank</th><th>Brand</th><th>Mean HP/CC</th></tr></thead>
+          <tbody>
+            <tr><td><strong style="color:var(--gold);">#1</strong></td><td><span style="display:inline-flex;align-items:center;gap:5px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--kaw);display:inline-block;"></span>Kawasaki</span></td><td><strong style="color:var(--green);">0.1518</strong></td></tr>
+            <tr><td><strong style="color:var(--muted);">#2</strong></td><td><span style="display:inline-flex;align-items:center;gap:5px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--yam);display:inline-block;"></span>Yamaha</span></td><td>0.1504</td></tr>
+            <tr><td><strong style="color:var(--muted);">#3</strong></td><td><span style="display:inline-flex;align-items:center;gap:5px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--honda);display:inline-block;"></span>Honda</span></td><td>0.1440</td></tr>
+            <tr><td><strong style="color:var(--muted);">#4</strong></td><td><span style="display:inline-flex;align-items:center;gap:5px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--bmw);display:inline-block;"></span>BMW</span></td><td>0.1380</td></tr>
+            <tr><td><strong style="color:var(--muted);">#5</strong></td><td><span style="display:inline-flex;align-items:center;gap:5px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--suz);display:inline-block;"></span>Suzuki</span></td><td>0.1340</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
-
-  <div class="g2 mb">
-    <div class="card">
-      <div class="ct">Skills Demonstrated</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-        <div style="background:var(--faint);border-radius:6px;padding:10px 12px;"><div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;">🐍 Python / Pandas</div><div style="font-size:11px;color:var(--muted);">Data loading, cleaning, transform</div></div>
-        <div style="background:var(--faint);border-radius:6px;padding:10px 12px;"><div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;">🔍 Regular Expressions</div><div style="font-size:11px;color:var(--muted);">Extracting data from messy strings</div></div>
-        <div style="background:var(--faint);border-radius:6px;padding:10px 12px;"><div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;">⚙️ Feature Engineering</div><div style="font-size:11px;color:var(--muted);">Creating the HP/CC efficiency metric</div></div>
-        <div style="background:var(--faint);border-radius:6px;padding:10px 12px;"><div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;">📈 Statistical Analysis</div><div style="font-size:11px;color:var(--muted);">Correlation, outlier detection</div></div>
-        <div style="background:var(--faint);border-radius:6px;padding:10px 12px;"><div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;">🎨 Data Visualisation</div><div style="font-size:11px;color:var(--muted);">Scatter, bar, heatmap charts</div></div>
-        <div style="background:var(--faint);border-radius:6px;padding:10px 12px;"><div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;">🌐 Data Storytelling</div><div style="font-size:11px;color:var(--muted);">Clear insights for any audience</div></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="ct">Final Efficiency Leaderboard</div>
-      <table class="dt">
-        <thead><tr><th>Rank</th><th>Brand</th><th>Mean HP/CC</th><th>Best Class</th></tr></thead>
-        <tbody>
-          <tr><td><strong style="color:var(--gold);">#1</strong></td><td><span style="display:inline-flex;align-items:center;gap:5px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--kaw);display:inline-block;"></span>Kawasaki</span></td><td><strong style="color:var(--green);">0.1518</strong></td><td style="font-size:11px;color:var(--muted);">Entry + Liter</td></tr>
-          <tr><td><strong style="color:var(--muted);">#2</strong></td><td><span style="display:inline-flex;align-items:center;gap:5px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--yam);display:inline-block;"></span>Yamaha</span></td><td>0.1504</td><td style="font-size:11px;color:var(--muted);">Liter parity</td></tr>
-          <tr><td><strong style="color:var(--muted);">#3</strong></td><td><span style="display:inline-flex;align-items:center;gap:5px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--honda);display:inline-block;"></span>Honda</span></td><td>0.1440</td><td style="font-size:11px;color:var(--muted);">Broad range</td></tr>
-          <tr><td><strong style="color:var(--muted);">#4</strong></td><td><span style="display:inline-flex;align-items:center;gap:5px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--bmw);display:inline-block;"></span>BMW</span></td><td>0.1380</td><td style="font-size:11px;color:var(--muted);">No entry class</td></tr>
-          <tr><td><strong style="color:var(--muted);">#5</strong></td><td><span style="display:inline-flex;align-items:center;gap:5px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--suz);display:inline-block;"></span>Suzuki</span></td><td>0.1340</td><td style="font-size:11px;color:var(--muted);">Consistent</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
   <div class="pnav">
     <button class="pn" onclick="go(5)">← Research Answers</button>
     <button class="pn pr" onclick="go(0)">Back to Start ↑</button>
@@ -777,23 +857,35 @@ z-index: 100;
 /* ── PAGE SYSTEM ── */
 const IDS=['p1','p2','p3','p4','p5','p6','p7'];
 const nts=document.querySelectorAll('.nt');
+const mobNts=document.querySelectorAll('.mob-nt');
 const pgCtr=document.getElementById('pgCtr');
 const ndots=document.getElementById('ndots');
+const mobBtn=document.getElementById('mobBtn');
+const mobDrawer=document.getElementById('mobDrawer');
 let cur=0;const built=new Array(7).fill(false);built[0]=true;
+
 IDS.forEach((_,i)=>{const d=document.createElement('div');d.className='ndot'+(i===0?' on':'');ndots.appendChild(d);});
+
+mobBtn.addEventListener('click',()=>mobDrawer.classList.toggle('open'));
+
 function go(idx){
-  if(idx===cur)return;
+  if(idx===cur&&idx!==0)return;
+  mobDrawer.classList.remove('open');
   document.getElementById(IDS[cur]).classList.replace('on','bye');
-  setTimeout(()=>document.getElementById(IDS[cur]).classList.remove('bye'),400);
+  setTimeout(()=>document.getElementById(IDS[cur]).classList.remove('bye'),380);
   document.getElementById(IDS[idx]).classList.add('on');
-  document.getElementById(IDS[idx]).scrollTop=0;
+  // reset scroll on inner
+  const inner=document.getElementById(IDS[idx]).querySelector('.page-inner');
+  if(inner)inner.scrollTop=0;
   nts[cur].classList.remove('on');nts[idx].classList.add('on');
+  mobNts[cur].classList.remove('on');mobNts[idx].classList.add('on');
   ndots.children[cur].classList.remove('on');ndots.children[idx].classList.add('on');
   pgCtr.textContent=String(idx+1).padStart(2,'0')+'/07';
   cur=idx;
   if(!built[idx]){built[idx]=true;setTimeout(()=>mkCharts(idx),60);}
 }
 nts.forEach((b,i)=>b.addEventListener('click',()=>go(i)));
+mobNts.forEach((b,i)=>b.addEventListener('click',()=>go(i)));
 
 /* ── COUNT-UP ── */
 function countUp(el,target,suffix,dur){
@@ -820,7 +912,7 @@ const BCL=['#39D448','#4455CC','#E8001D','#1A6FD4','#FF6B00'];
 Chart.defaults.color='#A08898';
 Chart.defaults.borderColor='rgba(255,30,120,0.08)';
 Chart.defaults.font.family="'Plus Jakarta Sans',sans-serif";
-Chart.defaults.font.size=11;
+Chart.defaults.font.size=10.5;
 
 function mk(id,cfg){const el=document.getElementById(id);if(!el)return null;return new Chart(el,cfg);}
 
@@ -832,52 +924,52 @@ function mkCharts(idx){
 
 function buildEDA(){
   mk('cBrandCount',{type:'bar',
-    data:{labels:['Honda','Yamaha','Kawasaki','BMW','Suzuki'],datasets:[{data:[95,85,80,75,65],backgroundColor:['#E8001D','#4455CC','#39D448','#1A6FD4','#FF6B00'],borderRadius:5,barPercentage:.55,borderColor:'transparent'}]},
-    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ~${c.raw} models`}}},scales:{x:{grid:{color:'rgba(255,30,120,0.06)'}},y:{grid:{display:false},ticks:{color:'#F5EEF2',font:{weight:'500'}}}}}
+    data:{labels:['Honda','Yamaha','Kawasaki','BMW','Suzuki'],datasets:[{data:[95,85,80,75,65],backgroundColor:['#E8001D','#4455CC','#39D448','#1A6FD4','#FF6B00'],borderRadius:4,barPercentage:.55,borderColor:'transparent'}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ~${c.raw} models`}}},scales:{x:{grid:{color:'rgba(255,30,120,0.06)'}},y:{grid:{display:false},ticks:{color:'#EEF2FA'}}}}
   });
 
   const rows=[
-    ['','CC','HP','Efficiency','Year'],
+    ['','CC','HP','Eff.','Year'],
     ['CC','1.000','+0.790','−0.320','+0.068'],
     ['HP','+0.790','1.000','+0.210','+0.095'],
-    ['Efficiency','−0.320','+0.210','1.000','+0.041'],
+    ['Eff.','−0.320','+0.210','1.000','+0.041'],
     ['Year','+0.068','+0.095','+0.041','1.000']
   ];
-  function rbg(v){const n=parseFloat(v.replace('−','-'));if(isNaN(n)||v==='1.000')return v==='1.000'?'rgba(255,210,0,0.16)':'transparent';if(n>0.5)return'rgba(255,30,120,0.2)';if(n>0)return'rgba(255,30,120,0.08)';if(n>-0.2)return'rgba(255,150,0,0.08)';return'rgba(255,150,0,0.18)';}
+  function rbg(v){const n=parseFloat(v.replace('−','-'));if(isNaN(n)||v==='1.000')return v==='1.000'?'rgba(255,210,0,0.16)':'transparent';if(n>0.5)return'rgba(255,30,120,0.22)';if(n>0)return'rgba(255,30,120,0.08)';if(n>-0.2)return'rgba(255,150,0,0.08)';return'rgba(255,150,0,0.2)';}
   function rfc(v){const n=parseFloat(v.replace('−','-'));if(isNaN(n))return'#A08898';if(v==='1.000')return'#FFD200';if(n>0)return'#FF5CA8';return'#FFB366';}
   let h='<table><tr>';
-  rows[0].forEach((c,i)=>{h+=`<th style="text-align:${i===0?'left':'center'};font-size:9.5px;">${c}</th>`;});h+='</tr>';
+  rows[0].forEach((c,i)=>{h+=`<th style="text-align:${i===0?'left':'center'}">${c}</th>`;});h+='</tr>';
   rows.slice(1).forEach(r=>{h+='<tr>';r.forEach((c,i)=>{h+=`<td style="background:${i===0?'transparent':rbg(c)};color:${i===0?'#F5EEF2':rfc(c)};font-weight:${i===0?'600':'400'};text-align:${i===0?'left':'center'};padding:7px 8px;border-radius:4px;">${c}</td>`;});h+='</tr>';});
   h+='</table>';
   document.getElementById('corrDiv').innerHTML=h;
 
-  const pts={Kawasaki:[{x:296,y:39},{x:399,y:45},{x:650,y:68},{x:998,y:203},{x:1043,y:160}],BMW:[{x:313,y:34},{x:649,y:77},{x:853,y:95},{x:999,y:210},{x:1254,y:130}],Honda:[{x:286,y:30},{x:471,y:47},{x:649,y:94},{x:999,y:189},{x:1084,y:102}],Suzuki:[{x:248,y:26},{x:645,y:76},{x:776,y:110},{x:999,y:199}],Yamaha:[{x:321,y:42},{x:689,y:75},{x:847,y:113},{x:998,y:200},{x:1199,y:150}]};
+  const pts={Kawasaki:[{x:296,y:39},{x:399,y:45},{x:650,y:68},{x:998,y:203}],BMW:[{x:313,y:34},{x:649,y:77},{x:853,y:95},{x:999,y:210}],Honda:[{x:286,y:30},{x:471,y:47},{x:649,y:94},{x:999,y:189}],Suzuki:[{x:248,y:26},{x:645,y:76},{x:999,y:199}],Yamaha:[{x:321,y:42},{x:689,y:75},{x:998,y:200}]};
   mk('cScatter',{type:'scatter',
-    data:{datasets:BN.map(b=>({label:b,data:pts[b],backgroundColor:BC[b]+'BB',pointRadius:7,pointHoverRadius:9,pointBorderColor:'transparent'}))},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#A08898',boxWidth:9,padding:16,usePointStyle:true}},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.raw.x}cc → ${c.raw.y} HP`}}},scales:{x:{title:{display:true,text:'Engine Size (CC)',color:'#A08898'},grid:{color:'rgba(255,30,120,0.06)'}},y:{title:{display:true,text:'Horsepower (HP)',color:'#A08898'},grid:{color:'rgba(255,30,120,0.06)'}}}}
+    data:{datasets:BN.map(b=>({label:b,data:pts[b],backgroundColor:BC[b]+'BB',pointRadius:6,pointHoverRadius:8,pointBorderColor:'transparent'}))},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#A08898',boxWidth:8,padding:12,usePointStyle:true}},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.raw.x}cc → ${c.raw.y}HP`}}},scales:{x:{title:{display:true,text:'Engine Size (CC)',color:'#A08898'},grid:{color:'rgba(255,30,120,0.06)'}},y:{title:{display:true,text:'Horsepower (HP)',color:'#A08898'},grid:{color:'rgba(255,30,120,0.06)'}}}}
   });
 }
 
 function buildBrand(){
   mk('cBrandEff',{type:'bar',
-    data:{labels:BN,datasets:[{data:[0.1518,0.1504,0.1440,0.1380,0.1340],backgroundColor:BCL,borderRadius:6,barPercentage:.55,borderColor:'transparent'}]},
+    data:{labels:BN,datasets:[{data:[0.1518,0.1504,0.1440,0.1380,0.1340],backgroundColor:BCL,borderRadius:5,barPercentage:.55,borderColor:'transparent'}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.raw.toFixed(4)} HP/CC`}}},scales:{y:{min:.10,max:.18,ticks:{callback:v=>v.toFixed(3)},grid:{color:'rgba(255,30,120,0.06)'}},x:{ticks:{color:'#F5EEF2'},grid:{display:false}}}}
   });
   mk('cClassLine',{type:'line',
-    data:{labels:['Small\n<400cc','Mid\n400-699cc','Sport\n700-949cc','Superbike\n950cc+'],datasets:[{data:[0.1480,0.1450,0.1400,0.1320],borderColor:'#FF1E78',backgroundColor:'rgba(255,30,120,0.08)',fill:true,tension:.4,pointBackgroundColor:'#FF1E78',pointBorderColor:'#F5EEF2',pointBorderWidth:2,pointRadius:7,borderWidth:2.5}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.raw.toFixed(4)} HP/CC`}}},scales:{y:{min:.11,max:.17,ticks:{callback:v=>v.toFixed(3)},grid:{color:'rgba(255,30,120,0.06)'}},x:{ticks:{color:'#F5EEF2',font:{size:10}},grid:{display:false}}}}
+    data:{labels:['Small\n<400cc','Mid\n400-699','Sport\n700-949','Super\n950cc+'],datasets:[{data:[0.1480,0.1450,0.1400,0.1320],borderColor:'#FF1E78',backgroundColor:'rgba(255,30,120,0.08)',fill:true,tension:.4,pointBackgroundColor:'#FF1E78',pointBorderColor:'#F5EEF2',pointBorderWidth:2,pointRadius:6,borderWidth:2.5}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.raw.toFixed(4)} HP/CC`}}},scales:{y:{min:.11,max:.17,ticks:{callback:v=>v.toFixed(3)},grid:{color:'rgba(255,30,120,0.06)'}},x:{ticks:{color:'#F5EEF2',font:{size:9.5}},grid:{display:false}}}}
   });
 
   const hd={Kawasaki:[0.1220,0.1380,0.1490,0.1638],Yamaha:[0.1150,0.1370,0.1480,0.1640],Honda:[0.1180,0.1310,0.1450,0.1598],BMW:[null,0.1280,0.1420,0.1520],Suzuki:[0.1090,0.1250,0.1380,0.1570]};
   const allV=Object.values(hd).flat().filter(v=>v!==null);
   const mn=Math.min(...allV),mx=Math.max(...allV);
-  function hcol(v){const t=(v-mn)/(mx-mn);const r=Math.round(20+(255-20)*t*0.5),g=Math.round(0+(30-0)*t),bl=Math.round(10+(120-10)*t);return`rgba(${r},${g},${bl},${0.15+t*0.65})`;}
+  function hcol(v){const t=(v-mn)/(mx-mn);const r=Math.round(20+(255-20)*t*0.45),g=0,bl=Math.round(10+(90-10)*t);return`rgba(${r},${g},${bl},${0.15+t*0.65})`;}
   let ht='<table><tr><th></th>';
-  ['Small &lt;400cc','Mid 400–699cc','Sport 700–949cc','Superbike 950cc+'].forEach(c=>{ht+=`<th>${c}</th>`;});ht+='</tr>';
+  ['Small &lt;400','Mid 400–699','Sport 700–949','Super 950cc+'].forEach(c=>{ht+=`<th>${c}</th>`;});ht+='</tr>';
   BN.forEach(b=>{
-    ht+=`<tr><td style="text-align:left;padding:8px 10px;color:#F5EEF2;font-weight:600;white-space:nowrap;"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${BC[b]};margin-right:6px;"></span>${b}</td>`;
+    ht+=`<tr><td style="text-align:left;padding:8px 10px;color:#F5EEF2;font-weight:600;white-space:nowrap;"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${BC[b]};margin-right:5px;"></span>${b}</td>`;
     hd[b].forEach(v=>{
-      if(v===null){ht+=`<td style="color:#2A0018;font-size:11px;">—</td>`;return;}
+      if(v===null){ht+=`<td style="color:#2A0018;font-size:10.5px;">—</td>`;return;}
       const t=(v-mn)/(mx-mn);
       ht+=`<td style="background:${hcol(v)};color:${t>0.5?'#FFB8D8':'#E07899'};font-weight:${t>0.6?600:400};">${v.toFixed(4)}</td>`;
     });ht+='</tr>';
@@ -887,19 +979,19 @@ function buildBrand(){
 
 function buildRQ(){
   mk('cEntry',{type:'bar',
-    data:{labels:['Kawasaki','Honda','Yamaha','Suzuki'],datasets:[{data:[0.1220,0.1180,0.1150,0.1090],backgroundColor:['#39D448','#E8001D','#4455CC','#FF6B00'],borderRadius:5,barPercentage:.55,borderColor:'transparent'}]},
+    data:{labels:['Kawasaki','Honda','Yamaha','Suzuki'],datasets:[{data:[0.1220,0.1180,0.1150,0.1090],backgroundColor:['#39D448','#E8001D','#4455CC','#FF6B00'],borderRadius:4,barPercentage:.55,borderColor:'transparent'}]},
     options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.raw.toFixed(4)} HP/CC`}}},scales:{x:{min:.08,max:.14,ticks:{callback:v=>v.toFixed(3)},grid:{color:'rgba(255,30,120,0.06)'}},y:{ticks:{color:'#F5EEF2'},grid:{display:false}}}}
   });
   mk('cDim',{type:'line',
-    data:{labels:['Small','Mid','Sport','Superbike'],datasets:[{data:[0.1480,0.1450,0.1400,0.1320],borderColor:'#FFD200',backgroundColor:'rgba(255,210,0,0.08)',fill:true,tension:.4,pointBackgroundColor:'#FFD200',pointBorderColor:'#F5EEF2',pointBorderWidth:2,pointRadius:6,borderWidth:2.5}]},
+    data:{labels:['Small','Mid','Sport','Super'],datasets:[{data:[0.1480,0.1450,0.1400,0.1320],borderColor:'#FFD200',backgroundColor:'rgba(255,210,0,0.08)',fill:true,tension:.4,pointBackgroundColor:'#FFD200',pointBorderColor:'#F5EEF2',pointBorderWidth:2,pointRadius:5,borderWidth:2.5}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:.11,max:.17,ticks:{callback:v=>v.toFixed(3)},grid:{color:'rgba(255,30,120,0.06)'}},x:{ticks:{color:'#F5EEF2'},grid:{display:false}}}}
   });
   mk('cLiter',{type:'bar',
     data:{labels:['Yamaha','Kawasaki','Honda','Suzuki','BMW'],datasets:[
-      {label:'Mean',data:[0.1640,0.1638,0.1598,0.1570,0.1520],backgroundColor:['#4455CC','#39D448','#E8001D','#FF6B00','#1A6FD4'],borderRadius:5,barPercentage:.4,borderColor:'transparent'},
-      {label:'Peak',data:[0.1720,0.1715,0.1680,0.1640,0.1590],backgroundColor:['rgba(68,85,204,.28)','rgba(57,212,72,.28)','rgba(232,0,29,.28)','rgba(255,107,0,.28)','rgba(26,111,212,.28)'],borderRadius:5,barPercentage:.4,borderColor:'transparent'}
+      {label:'Mean',data:[0.1640,0.1638,0.1598,0.1570,0.1520],backgroundColor:['#4455CC','#39D448','#E8001D','#FF6B00','#1A6FD4'],borderRadius:4,barPercentage:.42,borderColor:'transparent'},
+      {label:'Peak',data:[0.1720,0.1715,0.1680,0.1640,0.1590],backgroundColor:['rgba(68,85,204,.28)','rgba(57,212,72,.28)','rgba(232,0,29,.28)','rgba(255,107,0,.28)','rgba(26,111,212,.28)'],borderRadius:4,barPercentage:.42,borderColor:'transparent'}
     ]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#A08898',boxWidth:8,padding:12}},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.raw.toFixed(4)}`}}},scales:{y:{min:.13,max:.19,ticks:{callback:v=>v.toFixed(3)},grid:{color:'rgba(255,30,120,0.06)'}},x:{ticks:{color:'#F5EEF2'},grid:{display:false}}}}
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#A08898',boxWidth:7,padding:10}},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.raw.toFixed(4)}`}}},scales:{y:{min:.13,max:.19,ticks:{callback:v=>v.toFixed(3)},grid:{color:'rgba(255,30,120,0.06)'}},x:{ticks:{color:'#F5EEF2'},grid:{display:false}}}}
   });
 }
 </script>
